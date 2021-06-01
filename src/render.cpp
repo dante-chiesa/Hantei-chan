@@ -78,8 +78,9 @@ void main()
 )";
 
 
-Render::Render():
-cg(nullptr),
+Render::Render(CG* cg, Parts* parts):
+cg(cg),
+parts(parts),
 filter(false),
 vSprite(Vao::F2F2, GL_DYNAMIC_DRAW),
 vGeometry(Vao::F3F3, GL_STREAM_DRAW),
@@ -211,34 +212,35 @@ void Render::UpdateProj(float w, float h)
 	projection = glm::ortho<float>(0, w, h, 0, -1024.f, 1024.f);
 }
 
-void Render::SetCg(CG *cg_)
+void Render::SwitchImage(int id, bool pat)
 {
-	cg = cg_;
-}
-
-void Render::SwitchImage(int id)
-{
-	if(id != curImageId && cg->m_loaded)
+	if(id != curImageId || curPat != pat)
 	{
 		curImageId = id;
+		curPat = pat;
 		texture.Unapply();
 
-		if(id>=0)
+		ImageData *image = nullptr;
+		if(pat)
 		{
-			ImageData *image = cg->draw_texture(id, false, false);
-			if(!image)
-			{
-				return;
-			}
-
-			texture.Load(image);
-			texture.Apply(false, filter);
-			
-			AdjustImageQuad(texture.image->offsetX, texture.image->offsetY, texture.image->width, texture.image->height);
-			vSprite.UpdateBuffer(0, imageVertex);
-			texture.Unload();
+			image = parts->GetTexture(id);
 		}
+		else
+		{
+			image = cg->draw_texture(id, false, false);
+		}
+
+		if(!image)
+		{
+			return;
+		}
+
+		texture.Load(image);
+		texture.Apply(false, filter);
 		
+		AdjustImageQuad(texture.image->offsetX, texture.image->offsetY, texture.image->width, texture.image->height);
+		vSprite.UpdateBuffer(0, imageVertex);
+		texture.Unload();
 	}
 }
 
@@ -262,8 +264,6 @@ void Render::GenerateHitboxVertices(const BoxList &hitboxes)
 		quadsToDraw = 0;
 		return;
 	}
-	static Hitbox **lastHitbox = 0;
-	static int lastSize = 0;
 
 	const float *color;
 	//red, green, blue, z order

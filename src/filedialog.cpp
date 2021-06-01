@@ -33,6 +33,10 @@ std::string FileDialog(int fileType, bool save)
 	{
 		ofn.lpstrFilter = "INI text files (*.txt)\0*.txt\0All\0*.*\0";
 	}
+	else if(fileType == fileType::PAT)
+	{
+		ofn.lpstrFilter = "Parts (*.pat)\0*.pat\0All\0*.*\0";
+	}
 	else
 	{
 		ofn.lpstrFilter = "All\0*.*\0";

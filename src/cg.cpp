@@ -245,7 +245,7 @@ ImageData *CG::draw_texture(unsigned int n, bool to_pow2_flg, bool draw_8bpp) {
 	// finalize in texture
 	ImageData *texture;
 	
-	if (!(texture = new ImageData{pixels, width, height, is_8bpp, image->bounds_x1, image->bounds_y1}))
+	if (!(texture = new ImageData{pixels, width, height, is_8bpp, false, image->bounds_x1, image->bounds_y1}))
 	{
 		delete texture;
 		delete[] pixels;

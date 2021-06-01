@@ -2,6 +2,7 @@
 #define RENDER_H_GUARD
 
 #include "cg.h"
+#include "parts.h"
 #include "texture.h"
 #include "shader.h"
 #include "vao.h"
@@ -16,6 +17,7 @@ private:
 	glm::mat4 projection, view;
 	
 	CG *cg;
+	Parts *parts;
 	Vao vSprite;
 	Vao vGeometry;
 	enum{
@@ -36,6 +38,7 @@ private:
 	float colorRgba[4];
 
 	int curImageId;
+	bool curPat;
 	
 
 	void AdjustImageQuad(int x, int y, int w, int h);
@@ -52,13 +55,12 @@ public:
 	float rotX, rotY, rotZ;
 	int highLightN = -1;
 	
-	Render();
+	Render(CG* cg, Parts* parts);
 	void Draw();
 	void UpdateProj(float w, float h);
 
 	void GenerateHitboxVertices(const BoxList &hitboxes);
-	void SetCg(CG *cg);
-	void SwitchImage(int id);
+	void SwitchImage(int id, bool pat = false);
 	void DontDraw();
 	void SetImageColor(float *rgbaArr);
 

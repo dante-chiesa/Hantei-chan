@@ -6,7 +6,8 @@ enum {
 	HA6,
 	CG,
 	PAL,
-	TXT
+	TXT,
+	PAT
 };
 }
 

@@ -8,6 +8,7 @@
 #include "about.h"
 #include "framedata.h"
 #include "cg.h"
+#include "parts.h"
 #include <glm/mat4x4.hpp>
 #include <string>
 
@@ -37,6 +38,7 @@ private:
 	FrameData framedata;
 	FrameState currState;
 	CG cg;
+	Parts parts;
 	int curPalette;
 
 	std::string currentFilePath;

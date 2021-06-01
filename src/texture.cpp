@@ -65,6 +65,8 @@ void Texture::Apply(bool repeat, bool linearFilter)
 	}
 
 	GLenum extType = GL_RGBA;
+	if(image->bgr)
+		extType = GL_BGRA;
 	GLenum intType = GL_RGBA8;
 	
 	glTexImage2D(GL_TEXTURE_2D, 0, intType, image->width, image->height, 0, extType, GL_UNSIGNED_BYTE, image->pixels);

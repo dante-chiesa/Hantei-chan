@@ -21,10 +21,10 @@ mainPane(&render, &framedata, currState),
 rightPane(&render, &framedata, currState),
 boxPane(&render, &framedata, currState),
 curPalette(0),
-x(0),y(150)
+x(0),y(150),
+render(&cg, &parts)
 {
 	currState.spriteId = -1;
-	render.SetCg(&cg);
 	LoadSettings();
 }
 
@@ -64,7 +64,7 @@ void MainFrame::DrawBack()
 {
 	render.filter = smoothRender;
 	glClearColor(clearColor[0], clearColor[1], clearColor[2], 1.f);
-	glClear(GL_COLOR_BUFFER_BIT |  GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	render.x = (x+clientRect.x/2)/render.scale;
 	render.y = (y+clientRect.y/2)/render.scale;
 	render.Draw();
@@ -148,6 +148,7 @@ void MainFrame::RenderUpdate()
 	{
 		auto &frame =  seq->frames[currState.frame];
 		currState.spriteId = frame.AF.spriteId;
+		currState.usePat = frame.AF.usePat;
 		render.GenerateHitboxVertices(frame.hitboxes);
 		render.offsetX = (frame.AF.offset_x)*1;
 		render.offsetY = (frame.AF.offset_y)*1;
@@ -177,7 +178,7 @@ void MainFrame::RenderUpdate()
 		
 		render.DontDraw();
 	}
-	render.SwitchImage(currState.spriteId);
+	render.SwitchImage(currState.spriteId, currState.usePat);
 }
 
 void MainFrame::AdvancePattern(int dir)
@@ -382,6 +383,19 @@ void MainFrame::Menu(unsigned int errorPopupId)
 				if(!file.empty())
 				{
 					if(!cg.load(file.c_str()))
+					{
+						ImGui::OpenPopup(errorPopupId);	
+					}
+					render.SwitchImage(-1);
+				}
+			}
+
+			if (ImGui::MenuItem("Load Parts...")) 
+			{
+				std::string &&file = FileDialog(fileType::PAT);
+				if(!file.empty())
+				{
+					if(!parts.Load(file.c_str()))
 					{
 						ImGui::OpenPopup(errorPopupId);	
 					}

@@ -8,6 +8,7 @@ struct FrameState
 	int pattern;
 	int frame;
 	int spriteId;
+	bool usePat;
 };
 //ImGui Windows that draw themselves. Just for utility.
 class DrawWindow

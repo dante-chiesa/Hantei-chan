@@ -33,6 +33,7 @@ add_executable(${EXE} WIN32
 	src/imgui_utils.cpp
 	src/test.cpp
 	src/ini.cpp
+	src/parts.cpp
 	res/res.rc
 )
 

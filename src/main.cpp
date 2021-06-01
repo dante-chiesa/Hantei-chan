@@ -65,10 +65,10 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 		wcstombs(arg, argV[i], wcslen(argV[i])+1);
 		if(!strcmp(arg, "--test"))
 		{
-			std::ofstream coutFile, cerrFile;
+			std::ofstream coutFile;
 			coutFile.open("cout.txt");
 			auto cout_buf = std::cout.rdbuf(coutFile.rdbuf());
-			TestHa6();
+			TestPat();
 			LocalFree(argV);
 			return 0;
 		}

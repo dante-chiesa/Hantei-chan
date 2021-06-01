@@ -1,20 +1,7 @@
 #ifndef CG_H_GUARD
 #define CG_H_GUARD
 
-struct ImageData
-{
-	unsigned char *pixels = nullptr;
-	int width;
-	int height;
-	bool is8bpp;
-	int offsetX;
-	int offsetY;
-
-	~ImageData()
-	{
-		delete[] pixels;
-	}
-};
+#include "image.h"
 
 struct CG_Alignment {
 	int	x;
