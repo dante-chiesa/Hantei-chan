@@ -91,26 +91,28 @@ unsigned int* Parts::PpLoad(unsigned int *data, const unsigned int *data_end)
 			cdata += cdata[0]+1; //Length
 			data = (unsigned int *)cdata;
 		}  else if (!memcmp(buf, "PPCC", 4)) {
-			//two ints. coords
+			//coords
+			memcpy(pp.xy, data, sizeof(int)*2);
 			data += 2;
 		} else if (!memcmp(buf, "PPUV", 4)) {
-			//Texture coords?
-
+			//Texture coords
+			memcpy(pp.uv, data, sizeof(int)*4);
 			data += 4;
 		} else if (!memcmp(buf, "PPSS", 4)) {
-			//two ints
+			//相殺
+			memcpy(pp.wh, data, sizeof(int)*2);
 			data += 2;
 		} else if (!memcmp(buf, "PPTE", 4)) { //UNI
 			//two shorts?
 			++data;
 		} else if (!memcmp(buf, "PPPA", 4)) { //UNI
-			//int
 			++data;
 		} else if (!memcmp(buf, "PPTP", 4)) {
-			//int
+			//Optional?
+			pp.type = *data;
 			++data;
 		} else if (!memcmp(buf, "PPTX", 4)) {
-			//int
+			pp.texture = *data;
 			++data;
 		} else if (!memcmp(buf, "PPJP", 4)) {
 			//Optional
@@ -154,16 +156,16 @@ unsigned int* Parts::PrLoad(unsigned int *data, const unsigned int *data_end)
 			//two floats
 			data += 2;
 		} else if (!memcmp(buf, "PRSP", 4)) {
-			//idk
+			//Add color? RGBA?
 			++data;
 		} else if (!memcmp(buf, "PRAN", 4)) {
-			//???
+			//Some kind of identifier hash?
 			++data;
 		} else if (!memcmp(buf, "PRPR", 4)) {
-			//int
+			//Priority?
 			++data;
 		} else if (!memcmp(buf, "PRID", 4)) {
-			//int
+			//Part id
 			++data;
 		} else if (!memcmp(buf, "PRCL", 4)) {
 			//Seems optional
