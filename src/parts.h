@@ -8,14 +8,25 @@ class Parts{
 private:
 	char *data = nullptr;
 
-	struct tx{
+	struct PatternPart
+	{
+		char *name;
+		int uv[4]; //x,y,w,h TLBR
+		int xy[2];
+		int wh[2];
+		int texture;
+		int type;
+		int jump;
+	};
+
+	struct PartGfx{
 		char *name;
 		char *data;
 		int w,h;
 		int bpp;
 		int type;
 	};
-	std::vector<tx> textures;
+	std::vector<PartGfx> textures;
 
 
 	unsigned int *MainLoad(unsigned int *data, const unsigned int *data_end);

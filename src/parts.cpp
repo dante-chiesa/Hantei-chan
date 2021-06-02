@@ -4,9 +4,29 @@
 #include <iostream>
 #include <cassert>
 
+//UNI only
+unsigned int* Parts::VeLoad(unsigned int *data, const unsigned int *data_end, int amount) 
+{
+	while (data < data_end) {
+		unsigned int *buf = data;
+		++data;
+		
+		if (!memcmp(buf, "VNST", 4)) {
+			data += 8*amount;
+		} else if (!memcmp(buf, "VEED", 4)) {
+			break;
+		} else{
+			char tag[5]{};
+			memcpy(tag,buf,4);
+			std::cout <<"\tUnknown VE level tag: " << tag <<"\n";
+		}
+	}
+	return data;
+}
+
 unsigned int* Parts::PgLoad(unsigned int *data, const unsigned int *data_end)
 {
-	tx tex{};
+	PartGfx tex{};
 	while (data < data_end) {
 		unsigned int *buf = data;
 		++data;
@@ -57,11 +77,13 @@ unsigned int* Parts::PgLoad(unsigned int *data, const unsigned int *data_end)
 
 unsigned int* Parts::PpLoad(unsigned int *data, const unsigned int *data_end)
 {
+	PatternPart pp{};
+
 	while (data < data_end) {
 		unsigned int *buf = data;
 		++data;
 		if (!memcmp(buf, "PPNM", 4)) {
-			//A name?
+			pp.name = (char*)data;
 			data += 0x20/4;
 		} else if (!memcmp(buf, "PPNA", 4)) { //UNI
 			//Non null terminated name. Sjis
@@ -188,24 +210,6 @@ unsigned int* Parts::P_Load(unsigned int *data, const unsigned int *data_end)
 	return data;
 }
 
-unsigned int* Parts::VeLoad(unsigned int *data, const unsigned int *data_end, int amount) //UNI only
-{
-	while (data < data_end) {
-		unsigned int *buf = data;
-		++data;
-		
-		if (!memcmp(buf, "VNST", 4)) {
-			data += 8*amount;
-		} else if (!memcmp(buf, "VEED", 4)) {
-			break;
-		} else{
-			char tag[5]{};
-			memcpy(tag,buf,4);
-			std::cout <<"\tUnknown VE level tag: " << tag <<"\n";
-		}
-	}
-	return data;
-}
 
 unsigned int* Parts::MainLoad(unsigned int *data, const unsigned int *data_end)
 {
