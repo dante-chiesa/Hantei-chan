@@ -6,7 +6,7 @@
 
 unsigned int* Parts::PgLoad(unsigned int *data, const unsigned int *data_end)
 {
-	tx tex;
+	tx tex{};
 	while (data < data_end) {
 		unsigned int *buf = data;
 		++data;
@@ -16,6 +16,24 @@ unsigned int* Parts::PgLoad(unsigned int *data, const unsigned int *data_end)
 		} else if (!memcmp(buf, "PGTP", 4)) {
 			tex.type = data[0];
 			++data;
+		} else if (!memcmp(buf, "PGTE", 4)) { //UNI
+			//two shorts? Size again?
+			++data;
+		} else if (!memcmp(buf, "PGT2", 4)) { //UNI
+			//data[0] is size + 16?
+			//tex.w = data[1];
+			//tex.h = data[2];
+			data += 3;
+		} else if (!memcmp(buf, "DXT5", 4)) { //UNI
+			//??
+			int size = data[4];
+			data += 6;
+
+			char *cdata = (char *)data;
+			//TODO: Load DDS at cdata
+			tex.data = cdata;
+			cdata += size; //Length
+			data = (unsigned int *)cdata;
 		} else if (!memcmp(buf, "PGTX", 4)) {
 			tex.w = data[0];
 			tex.h = data[1];
@@ -29,6 +47,7 @@ unsigned int* Parts::PgLoad(unsigned int *data, const unsigned int *data_end)
 			break;
 		} else {
 			char tag[5]{};
+			memcpy(tag,buf,4);
 			std::cout <<"\tUnknown PG level tag: " << tag <<"\n";
 		}
 	}
@@ -44,7 +63,12 @@ unsigned int* Parts::PpLoad(unsigned int *data, const unsigned int *data_end)
 		if (!memcmp(buf, "PPNM", 4)) {
 			//A name?
 			data += 0x20/4;
-		} else if (!memcmp(buf, "PPCC", 4)) {
+		} else if (!memcmp(buf, "PPNA", 4)) { //UNI
+			//Non null terminated name. Sjis
+			unsigned char *cdata = (unsigned char *)data;
+			cdata += cdata[0]+1; //Length
+			data = (unsigned int *)cdata;
+		}  else if (!memcmp(buf, "PPCC", 4)) {
 			//two ints. coords
 			data += 2;
 		} else if (!memcmp(buf, "PPUV", 4)) {
@@ -54,6 +78,12 @@ unsigned int* Parts::PpLoad(unsigned int *data, const unsigned int *data_end)
 		} else if (!memcmp(buf, "PPSS", 4)) {
 			//two ints
 			data += 2;
+		} else if (!memcmp(buf, "PPTE", 4)) { //UNI
+			//two shorts?
+			++data;
+		} else if (!memcmp(buf, "PPPA", 4)) { //UNI
+			//int
+			++data;
 		} else if (!memcmp(buf, "PPTP", 4)) {
 			//int
 			++data;
@@ -68,6 +98,7 @@ unsigned int* Parts::PpLoad(unsigned int *data, const unsigned int *data_end)
 			break;
 		} else {
 			char tag[5]{};
+			memcpy(tag,buf,4);
 			std::cout <<"\tUnknown PP level tag: " << tag <<"\n";
 		}
 	}
@@ -116,10 +147,13 @@ unsigned int* Parts::PrLoad(unsigned int *data, const unsigned int *data_end)
 			//Seems optional
 			//Color key maybe??
 			++data;
+		} else if (!memcmp(buf, "PRA3", 4)) { //UNI
+			data += 4;
 		} else if (!memcmp(buf, "PRED", 4)) {
 			break;
 		} else {
 			char tag[5]{};
+			memcpy(tag,buf,4);
 			std::cout <<"\tUnknown PR level tag: " << tag <<"\n";
 		}
 	}
@@ -134,6 +168,11 @@ unsigned int* Parts::P_Load(unsigned int *data, const unsigned int *data_end)
 		if (!memcmp(buf, "PANM", 4)) {
 			//A name?
 			data += 0x20/4;
+		} else if (!memcmp(buf, "PANA", 4)) { //UNI
+			//Non null terminated name
+			unsigned char *cdata = (unsigned char *)data;
+			cdata += cdata[0]+1; //Length
+			data = (unsigned int *)cdata;
 		} else if (!memcmp(buf, "PRST", 4)) {
 			//some id = data[0];
 			++data;
@@ -142,7 +181,27 @@ unsigned int* Parts::P_Load(unsigned int *data, const unsigned int *data_end)
 			break;
 		} else {
 			char tag[5]{};
+			memcpy(tag,buf,4);
 			std::cout <<"\tUnknown P_ level tag: " << tag <<"\n";
+		}
+	}
+	return data;
+}
+
+unsigned int* Parts::VeLoad(unsigned int *data, const unsigned int *data_end, int amount) //UNI only
+{
+	while (data < data_end) {
+		unsigned int *buf = data;
+		++data;
+		
+		if (!memcmp(buf, "VNST", 4)) {
+			data += 8*amount;
+		} else if (!memcmp(buf, "VEED", 4)) {
+			break;
+		} else{
+			char tag[5]{};
+			memcpy(tag,buf,4);
+			std::cout <<"\tUnknown VE level tag: " << tag <<"\n";
 		}
 	}
 	return data;
@@ -166,6 +225,11 @@ unsigned int* Parts::MainLoad(unsigned int *data, const unsigned int *data_end)
 			//some id = data[0];
 			++data;
 			data = PgLoad(data, data_end);
+		} else if (!memcmp(buf, "VEST", 4)) { //UNI
+			int amount = data[0];
+			int len = data[1];
+			data += amount*len + 2;
+			data = VeLoad(data, data_end, amount);
 		} else if (!memcmp(buf, "_END", 4)) {
 			break;
 		} else {

@@ -23,6 +23,7 @@ private:
 	unsigned int *PrLoad(unsigned int *data, const unsigned int *data_end);
 	unsigned int *PpLoad(unsigned int *data, const unsigned int *data_end);
 	unsigned int *PgLoad(unsigned int *data, const unsigned int *data_end);
+	unsigned int *VeLoad(unsigned int *data, const unsigned int *data_end, int amount);
 	
 public:
 	bool Load(const char *name);
