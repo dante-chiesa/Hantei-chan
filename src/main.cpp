@@ -3,6 +3,7 @@
 #include "main_frame.h"
 #include "test.h"
 #include "ini.h"
+#include "clock.h"
 
 #include <iostream>
 #include <fstream>
@@ -52,6 +53,20 @@ void LoadJapaneseFonts(ImGuiIO& io)
 	}
 }
 
+bool LoopEvents()
+{
+	MSG msg;
+	bool running = true;
+	while (PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
+	{
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+		if (msg.message == WM_QUIT)
+			running = false;
+	}
+	return running;
+}
+
 
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow)
@@ -68,7 +83,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 			std::ofstream coutFile;
 			coutFile.open("cout.txt");
 			auto cout_buf = std::cout.rdbuf(coutFile.rdbuf());
-			TestPat();
+			TestHa6();
 			LocalFree(argV);
 			return 0;
 		}
@@ -122,14 +137,32 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 		
 	UpdateWindow(hwnd);
 
-	MSG msg;
-	while (GetMessage(&msg, NULL, 0, 0))
+	
+	if(gSettings.idleUpdate)
 	{
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
-		MainFrame* mf = (MainFrame*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
-		if(mf)
-			mf->Draw();
+		Clock clock;
+		clock.targetSpf = 1.0/60.0;
+		while(LoopEvents())
+		{
+			MainFrame* mf = (MainFrame*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+			if(mf)
+			{
+				mf->Draw();
+				clock.SleepUntilNextFrame();
+			}
+		}
+	}
+	else
+	{
+		MSG msg;
+		while (GetMessage(&msg, NULL, 0, 0))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+			MainFrame* mf = (MainFrame*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+			if(mf)
+				mf->Draw();
+		}
 	}
 
 	DestroyWindow(hwnd);

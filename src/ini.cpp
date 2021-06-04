@@ -40,6 +40,8 @@ static void ReadLine(ImGuiContext*, ImGuiSettingsHandler*, void* entry, const ch
 		gSettings.winSizeY = i;
 	} else if (sscanf(line, "Maximized=%i", &i) == 1){
 		gSettings.maximized = i;
+	} else if (sscanf(line, "IdleUpdate=%i", &i) == 1){
+		gSettings.idleUpdate = i;
 	}
 }
 
@@ -56,6 +58,7 @@ static void Write(ImGuiContext* ctx, ImGuiSettingsHandler* handler, ImGuiTextBuf
 	buf->appendf("sizeX=%hi\n", gSettings.winSizeX);
 	buf->appendf("sizeY=%hi\n", gSettings.winSizeY);
 	buf->appendf("Maximized=%i\n", gSettings.maximized);
+	buf->appendf("IdleUpdate=%i\n", gSettings.idleUpdate);
 	buf->append("\n");
 }
 

@@ -34,6 +34,7 @@ add_executable(${EXE} WIN32
 	src/test.cpp
 	src/ini.cpp
 	src/parts.cpp
+	src/clock.cpp
 	res/res.rc
 )
 

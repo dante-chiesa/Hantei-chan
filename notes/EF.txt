@@ -2,12 +2,18 @@
 	no: pattern to spawn
 	param1: X offset
 	param2: Y offset
+	param3: Spawn pos flags
+		1 << 7 = Always on floor.
 	
 2
 3
 4
 5
-6
+6 Vector
+	no:
+		6
+		param1: X speed
+		param2: random added X speed
 8
 9 Play audio
 11

@@ -15,8 +15,12 @@ public:
 	void RegenerateNames();
 
 private:
+	Sequence copiedPattern{};
 	bool copyThisFrame = true;
 	std::string *decoratedNames;
+
+	bool rangeWindow = false;
+	int ranges[2]{};
 
 };
 

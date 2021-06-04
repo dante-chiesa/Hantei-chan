@@ -297,18 +297,18 @@ unsigned int *fd_frame_IF_load(unsigned int *data, const unsigned int *data_end,
 				for (int i = 0; i < count; ++i) {
 					IF->parameters[i] = data[i+1];
 				}
-				/* if(IF->type == 3 && count > 2)
+				if(IF->type == 35)
 				{
 					if(maxCount < count)
 						 maxCount = count;
-					numberSet.insert(IF->parameters[4]);
+					numberSet.insert(IF->parameters[7]);
 					test.Print(data, data_end);
 					std::cout <<"\tIFTP " << IF->type <<" Params:";
 					for (int i = 0; i < count; ++i) {
 						std::cout <<" "<<IF->parameters[i];
 					}
 					std::cout<<"\n";
-				} */
+				}
 			} else {
 				test.Print(data, data_end);
 				std::cout <<"\tUnhandled number of IF parameters: " << count <<"\n";
@@ -612,13 +612,12 @@ unsigned int *fd_sequence_load(unsigned int *data, const unsigned int *data_end,
 			//Maybe 技情報. Has to do with the kind of move?
 			//Doesn't appear = 0, Movement
 			//1 Regular attacks
-			//2 Throw. Only Arc (and b_arc) uses it?
-			//3 必殺技? FRies 236C uses it
-			//4 必殺投げ　Some kouma grab
+			//2 Throw. Only arc's 55 and 56
+			//3 必殺技? Various
+			//4 必殺投げ Only kouma's 110
 			//5 他 Projectiles, but not effects.
-			//6 NAC's 96. 超必殺技
+			//6 超必殺技 Only NAC's 96 and hime's 298 
 			psts = *data;
-			assert(*data <= 6 && *data >= 0); //known values
 			++data;
 		} else if (!memcmp(buf, "PLVL", 4)) {
 			//Determines rebeat
@@ -628,7 +627,7 @@ unsigned int *fd_sequence_load(unsigned int *data, const unsigned int *data_end,
 		} else if (!memcmp(buf, "PFLG", 4)) {
 			//Unknown. Always 1?
 			flag = *data;
-			assert(*data == 1);
+			
 			++data;
 		} else if (!memcmp(buf, "PDST", 4)) {
 			// PDST is only used on G_CHAOS
@@ -692,6 +691,7 @@ unsigned int *fd_sequence_load(unsigned int *data, const unsigned int *data_end,
 				seq->psts = psts;
 				seq->level = level;
 				seq->flag = flag;
+			
 			}
 			else
 				assert(0 && "PSD2 size is not 32");

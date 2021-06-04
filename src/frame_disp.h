@@ -4,7 +4,7 @@
 
 namespace im = ImGui;
 
-inline void IfDisplay(std::vector<Frame_IF> *ifList_)
+inline void IfDisplay(std::vector<Frame_IF> *ifList_, Frame_IF* copied)
 {
 	std::vector<Frame_IF> & ifList = *ifList_;
 	constexpr float width = 75.f;
@@ -26,7 +26,11 @@ inline void IfDisplay(std::vector<Frame_IF> *ifList_)
 		}
 		ImGui::PopStyleColor();
 
-		im::InputScalarN("##params", ImGuiDataType_S32, ifList[i].parameters, 6, NULL, NULL, "%d", 0);
+		im::InputScalarN("##params", ImGuiDataType_S32, ifList[i].parameters, 6, NULL, NULL, "%d", 0); im::SameLine();
+		if(im::Button("Copy"))
+		{
+			*copied = ifList[i];
+		}
 		im::InputScalarN("##params2", ImGuiDataType_S32, ifList[i].parameters+6, 3, NULL, NULL, "%d", 0);
 		im::PopID();
 	};
@@ -38,7 +42,7 @@ inline void IfDisplay(std::vector<Frame_IF> *ifList_)
 		ifList.push_back({});
 }
 
-inline void EfDisplay(std::vector<Frame_EF> *efList_)
+inline void EfDisplay(std::vector<Frame_EF> *efList_, Frame_EF* copied)
 {
 	std::vector<Frame_EF> & efList = *efList_;
 	constexpr float width = 50.f;
@@ -62,7 +66,11 @@ inline void EfDisplay(std::vector<Frame_EF> *efList_)
 		}
 		ImGui::PopStyleColor();
 		
-		im::InputScalarN("##params", ImGuiDataType_S32, efList[i].parameters, 6, NULL, NULL, "%d", 0);
+		im::InputScalarN("##params", ImGuiDataType_S32, efList[i].parameters, 6, NULL, NULL, "%d", 0); im::SameLine();
+		if(im::Button("Copy"))
+		{
+			*copied = efList[i];
+		}
 		im::InputScalarN("##params2", ImGuiDataType_S32, efList[i].parameters+6, 6, NULL, NULL, "%d", 0);
 
 		im::PopID();
@@ -266,8 +274,8 @@ inline void AtDisplay(Frame_AT *at)
 		case 14: Tooltip("Unknown"); break;
 		
 		case 16: Tooltip("Use custom blockstop"); break;
-		case 17: Tooltip("Unknown"); break;
-		case 18: Tooltip("Unknown"); break;
+		case 17: Tooltip("OTG Relaunches"); break;
+		case 18: Tooltip("Can't counterhit"); break;
 		case 19: Tooltip("Unknown"); break;
 		case 20: Tooltip("Unknown"); break;
 		case 21: Tooltip("Unknown"); break;
@@ -371,7 +379,8 @@ inline void AfDisplay(Frame_AF *af)
 	constexpr float width = 50.f;
 
 	im::SetNextItemWidth(width*3);
-	im::InputInt("Sprite", &af->spriteId); im::SameLine(0, 20.f);
+	im::InputInt("Sprite", &af->spriteId);
+	im::SameLine(0, 20.f);
 	im::Checkbox("Use .pat", &af->usePat);
 
 	im::Separator();
@@ -381,7 +390,7 @@ inline void AfDisplay(Frame_AF *af)
 	switch (flagIndex)
 	{
 		case 0: Tooltip("Unknown"); break;
-		case 1: Tooltip("Unknown"); break;
+		case 1: Tooltip("Check loop counter"); break;
 		case 2: Tooltip("Go to relative offset"); break;
 		case 3: Tooltip("Unknown"); break;
 	}
@@ -420,4 +429,5 @@ inline void AfDisplay(Frame_AF *af)
 	im::DragFloat2("Scale", af->scale, 0.1);
 	im::Checkbox("Rotation keeps scale set by EF", &af->AFRT);
 
+	
 }

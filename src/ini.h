@@ -16,6 +16,7 @@ extern struct Settings
 	short winSizeX = 1280;
 	short winSizeY = 800;
 	bool maximized = false;
+	bool idleUpdate = true;
 } gSettings;
 
 bool LoadFromIni(FrameData *framedata, CG *cg, const std::string& iniPath);

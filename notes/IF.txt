@@ -9,7 +9,7 @@
 		2 = Despawn when touching stage borders
 		3 = Despawn when outside the screen
 	param2: 0-1 Unknown
-	param3: Despawn at animation end.
+	param3: 1 = Despawn at animation end.
 	param4: 1 11 21 31 41 51 61 62 71 79 81 91 - Appears only if param3 is 1. Unknown
 
 3 Branch on hit
@@ -30,6 +30,17 @@
 4 Vector check
 5 KO flag check
 6 Lever & Trigger check 1
+	param1:
+	param2: Button(s) that needs to be pressed. It's a flag. Values can be OR'd
+		1 = a
+		2 = b
+		4 = c
+		8 = d
+	param3: Frame to jump to
+	param4: Flags
+		1 = Negate the condition?
+		2 = Must be held
+
 7 Lever & Trigger check 2
 8 Random check
 9 Loop counter settings	(Unused?)
@@ -62,8 +73,15 @@
 
 33 If sound effect is playing
 34 Homing
-35 Additional command input check, multiple.
-	param2: can input move id defined in c.txt
+35 Custom cancel command check, multiple. Can input moves with bit5 on
+	param1:
+		0 = always
+		1 = on hit/block
+		2 = only on hit
+		3 = only on block (unused)
+	param2-5: can input move id (first parameter) defined in c.txt 
+	param8: ???
+
 
 36 Meter bar mode check
 37 Jump according to color selected

@@ -15,18 +15,49 @@ void RightPane::Draw()
 			if (ImGui::TreeNode("Attack data"))
 			{
 				AtDisplay(&frame.AT);
+				if(im::Button("Copy AT")){
+					copiedAt = frame.AT;
+				}
+
+				im::SameLine(0,20.f); 
+				if(im::Button("Paste AT")){
+					frame.AT = copiedAt;
+				}
+
 				ImGui::TreePop();
 				ImGui::Separator();
 			}
 			if(ImGui::TreeNode("Effects"))
 			{
-				EfDisplay(&frame.EF);
+				EfDisplay(&frame.EF, &copiedEf);
+				if(im::Button("Copy all")){
+					copiedEfList = frame.EF;
+				}
+				im::SameLine(0,20.f); 
+				if(im::Button("Paste all")){
+					frame.EF = copiedEfList;
+				}
+				im::SameLine(0,20.f); 
+				if(im::Button("Add copy")){
+					frame.EF.push_back(copiedEf);
+				}
 				ImGui::TreePop();
 				ImGui::Separator();
 			}
 			if(ImGui::TreeNode("Conditions"))
 			{
-				IfDisplay(&frame.IF);
+				IfDisplay(&frame.IF, &copiedIf);
+				if(im::Button("Copy all")){
+					copiedIfList = frame.IF;
+				}
+				im::SameLine(0,20.f); 
+				if(im::Button("Paste all")){
+					frame.IF = copiedIfList;
+				}
+				im::SameLine(0,20.f); 
+				if(im::Button("Add copy")){
+					frame.IF.push_back(copiedIf);
+				}
 				ImGui::TreePop();
 				ImGui::Separator();
 			}

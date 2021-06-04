@@ -19,6 +19,7 @@ public:
 		if(isVisible)
 		{
 			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(1,1,1,0.3));
+			ImGui::SetNextWindowSize(ImVec2{400,155});
 			ImGui::Begin("About", &isVisible, ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0,0,0,1));
 			ImGui::Text("Hantei-chan v" HA6GUIVERSION);
@@ -26,7 +27,8 @@ public:
 			ImGui::Text("Made by omanko.");
 			ImGui::Spacing();
 			ImGui::Text("Special thanks to mauve, MadScientist, u4ick and Rhekar.");
-		
+			ImGui::Separator();
+			ImGui::Text("\nApplication average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			ImGui::End();
 			ImGui::PopStyleColor(2);
 		}

@@ -331,6 +331,8 @@ void WriteFrame(std::ofstream &file, const Frame *frame)
 	WriteAF(file, &frame->AF);
 	WriteAS(file, &frame->AS);
 
+
+	bool hasAt = false;
 	if(!frame->hitboxes.empty())
 	{
 		auto maxhurt = frame->hitboxes.lower_bound(25);
@@ -350,6 +352,7 @@ void WriteFrame(std::ofstream &file, const Frame *frame)
 			int val = maxhit->first-25+1;
 			file.write("FSNA", 4);
 			file.write(VAL(val), 4);
+			hasAt = true;
 		}
 	}
 
@@ -367,7 +370,7 @@ void WriteFrame(std::ofstream &file, const Frame *frame)
 	}
 
 	constexpr Frame_AT defAT{};
-	if(!!memcmp(&frame->AT, &defAT, sizeof(Frame_AT)))
+	if(!!memcmp(&frame->AT, &defAT, sizeof(Frame_AT)) || hasAt)
 		WriteAT(file, &frame->AT);
 
 	for(const auto& box : frame->hitboxes)

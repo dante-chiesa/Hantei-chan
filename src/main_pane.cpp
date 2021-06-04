@@ -95,6 +95,13 @@ void MainPane::Draw()
 					decoratedNames[currState.pattern] = frameData->GetDecoratedName(currState.pattern);
 				}
 				PatternDisplay(seq);
+				if(im::Button("Copy pattern")){
+					copiedPattern = *seq;
+				}
+				im::SameLine(0,20.f); 
+				if(im::Button("Paste pattern")){
+					*seq = copiedPattern;
+				}
 				im::TreePop();
 				im::Separator();
 			}
@@ -110,6 +117,12 @@ void MainPane::Draw()
 				if (im::TreeNode("Animation data"))
 				{
 					AfDisplay(&frame.AF);
+					if(im::Button("Range paste"))
+					{
+						ranges[0] = 0;
+						ranges[1] = 0;
+						rangeWindow = !rangeWindow;
+					}
 					im::TreePop();
 					im::Separator();
 				}
@@ -146,13 +159,47 @@ void MainPane::Draw()
 					im::Separator();
 				}
 			}
+			else
+				rangeWindow = false;
 			im::EndChild();
 		}
 	}
 	else
 		im::Text("Load some data first.");
 
-	//im::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / im::GetIO().Framerate, im::GetIO().Framerate);
 	im::End();
+
+	if(rangeWindow)
+	{
+		im::SetNextWindowSize(ImVec2{400,120}, ImGuiCond_FirstUseEver);
+		im::Begin("Range paste", &rangeWindow);
+		im::InputInt2("Range of frames", ranges);
+		if(im::Button("Paste color"))
+		{
+			auto seq = frameData->get_sequence(currState.pattern);
+			if(ranges[0] == ranges[1])
+				ranges[1] = seq->frames.size()-1;
+
+			for(int i = ranges[0]; i <= ranges[1] && i <= 0 && i < seq->frames.size(); i++)
+			{
+				memcpy(seq->frames[i].AF.rgba, seq->frames[currState.frame].AF.rgba, sizeof(float)*4);
+			}
+		}
+		if(im::Button("Paste transform"))
+		{
+			auto seq = frameData->get_sequence(currState.pattern);
+			if(ranges[0] == ranges[1])
+				ranges[1] = seq->frames.size()-1;
+			
+			for(int i = ranges[0]; i <= ranges[1] && i >= 0 && i < seq->frames.size(); i++)
+			{
+				seq->frames[i].AF.offset_x = seq->frames[currState.frame].AF.offset_x;
+				seq->frames[i].AF.offset_y = seq->frames[currState.frame].AF.offset_y;
+				memcpy(seq->frames[i].AF.scale, seq->frames[currState.frame].AF.scale, sizeof(float)*2);
+				memcpy(seq->frames[i].AF.rotation, seq->frames[currState.frame].AF.rotation, sizeof(float)*3);
+			}
+		}
+		im::End();
+	}
 }
 
