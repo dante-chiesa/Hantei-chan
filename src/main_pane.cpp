@@ -180,9 +180,10 @@ void MainPane::Draw()
 			if(ranges[0] == ranges[1])
 				ranges[1] = seq->frames.size()-1;
 
-			for(int i = ranges[0]; i <= ranges[1] && i <= 0 && i < seq->frames.size(); i++)
+			for(int i = ranges[0]; i <= ranges[1] && i >= 0 && i < seq->frames.size(); i++)
 			{
 				memcpy(seq->frames[i].AF.rgba, seq->frames[currState.frame].AF.rgba, sizeof(float)*4);
+				seq->frames[i].AF.blend_mode = seq->frames[currState.frame].AF.blend_mode;
 			}
 		}
 		if(im::Button("Paste transform"))

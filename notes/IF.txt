@@ -42,7 +42,9 @@
 		2 = Must be held
 
 7 Lever & Trigger check 2
-8 Random check
+8 Random check (runs every subframe)
+	param1: frame to jump to
+	param2: Chance (max 512)
 9 Loop counter settings	(Unused?)
 10 Loop counter check	(Unused?)
 11 Additional command input check
@@ -55,13 +57,26 @@
 18 Check main/trunk animation and jump.
 19 Projectile box col check. (Reflection)
 20 Box collision check 2
+
 21 Opponent's character number check
+	param1: Frame to jump to
+	param2: Character id (probably the list in charaselect.txt)
+		0 Sion
+		8 Miyako
+
 22 BG number check	(Unused?)
 23 BG type check	(Unused?)
 24 Projectile flag check
 25 Variable check
 26 Check lever and change vector
-27 Branch if thrown
+27 Branch if hit
+	param1: Frame/Pattern to jump to
+	param2: 0 Pattern, 1 Frame
+	param3: Flags. Only when getting thrown if 0.
+		bit 0 When getting thrown
+		bit 1 When getting hurt
+		bit 2 When blocking
+
 28 Jump if knocked out
 29 Check X pos in screen and jump	(Unused?)
 30 Facing direction check
@@ -96,7 +111,11 @@
 
 50 Effect reflection box.	(Unused?)
 51 ?
-52 ?
+52 Throw check
+	param 1: frame to jump to if the throw is successful
+	param 2: if 1, it's an air throw.
+	param 3: Frame to jump to if the airthrow is part of a combo
+	
 53 ?
 54 ?
 55 ?
