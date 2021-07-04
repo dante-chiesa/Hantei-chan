@@ -101,7 +101,22 @@ void MainPane::Draw()
 				im::SameLine(0,20.f); 
 				if(im::Button("Paste pattern")){
 					*seq = copiedPattern;
+					decoratedNames[currState.pattern] = frameData->GetDecoratedName(currState.pattern);
 				}
+
+				if(im::Button("Push pattern copy"))
+				{
+					patCopyStack.push_back(SequenceWId{currState.pattern, *seq});
+				}
+				im::SameLine(0,20.f);
+				if(im::Button("Pop all copies"))
+				{
+					PopCopies();
+					RegenerateNames();
+				}
+				im::SameLine(0,20.f);
+				im::Text("%llu copies", patCopyStack.size());
+
 				im::TreePop();
 				im::Separator();
 			}
@@ -155,6 +170,8 @@ void MainPane::Draw()
 							currState.frame--;
 					}
 
+					
+
 					im::TreePop();
 					im::Separator();
 				}
@@ -204,3 +221,11 @@ void MainPane::Draw()
 	}
 }
 
+void MainPane::PopCopies()
+{
+	for(auto &pat : patCopyStack)
+	{
+		*frameData->get_sequence(pat.id) = pat.seq;
+	}
+	patCopyStack.clear();
+}

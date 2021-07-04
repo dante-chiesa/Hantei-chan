@@ -4,6 +4,7 @@
 #include "framedata.h"
 #include "render.h"
 #include <string>
+#include <list>
 
 //This is the main pane on the left
 class MainPane : DrawWindow
@@ -21,6 +22,14 @@ private:
 
 	bool rangeWindow = false;
 	int ranges[2]{};
+
+	struct SequenceWId{
+		int id;
+		Sequence seq;
+	};
+
+	std::list<SequenceWId> patCopyStack;
+	void PopCopies();
 
 };
 

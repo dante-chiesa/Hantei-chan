@@ -10,7 +10,7 @@
 		3 = Despawn when outside the screen
 	param2: 0-1 Unknown
 	param3: 1 = Despawn at animation end.
-	param4: 1 11 21 31 41 51 61 62 71 79 81 91 - Appears only if param3 is 1. Unknown
+	param4: 1 11 21 31 41 51 61 62 71 79 81 91 - Appears only if param3 is 1. Unknown. Related to param9 of effect1?
 
 3 Branch on hit
 	param1: Frame to jump to. Add 10000 for pattern jump.
@@ -19,7 +19,7 @@
 		1 = on block too
 		2
 		3
-		5
+		5 = Only on block
 		6
 		7
 		100 = only on shield
@@ -30,7 +30,7 @@
 4 Vector check
 5 KO flag check
 6 Lever & Trigger check 1
-	param1:
+	param1: ?? often 255
 	param2: Button(s) that needs to be pressed. It's a flag. Values can be OR'd
 		1 = a
 		2 = b
@@ -50,7 +50,12 @@
 11 Additional command input check
 12 Opponent distance check
 13 Screen corner check
+
 14 Box collision check
+	param1: Frame to jump to
+	param2: No idea
+	param3: Probably blue box index?
+
 15 Box collision check (Capture)
 16 Be affected by scrolling
 17 Branch according to number of hits within animation
@@ -67,9 +72,16 @@
 22 BG number check	(Unused?)
 23 BG type check	(Unused?)
 24 Projectile flag check
-25 Variable check
+25 Variable comparison
+	param1: Frame to jump to
+	param2: Variable id
+	param3: Value to compare
+	param4: Type of check??
+		0 Greater than
+		1 Less than
+		2 Equal to
 26 Check lever and change vector
-27 Branch if hit
+27 Branch when parent gets hurt 
 	param1: Frame/Pattern to jump to
 	param2: 0 Pattern, 1 Frame
 	param3: Flags. Only when getting thrown if 0.

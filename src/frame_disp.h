@@ -389,10 +389,10 @@ inline void AfDisplay(Frame_AF *af)
 	BitField("Animation flags", &af->aniFlag, &flagIndex, 4);
 	switch (flagIndex)
 	{
-		case 0: Tooltip("Unknown"); break;
+		case 0: Tooltip("Land to pattern?"); break;
 		case 1: Tooltip("Check loop counter"); break;
 		case 2: Tooltip("Go to relative offset"); break;
-		case 3: Tooltip("Unknown"); break;
+		case 3: Tooltip("Relative end of loop"); break;
 	}
 
 	im::Combo("Animation", &af->aniType, animationList, IM_ARRAYSIZE(animationList));

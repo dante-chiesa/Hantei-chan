@@ -8,15 +8,21 @@
 		bit 2 = Follow parent
 		bit 3 = Affected by hitstop of parent.
 		bit 4 = Use absolute coordinates.
+		bit 5 = Remove when parent changes pattern.
 		bit 6 = Can go below floor level.
 		bit 7 = Always on floor.
+		bit 8 = Synced Random rotation? Used mostly by effect.ha6
+		bit 9 = Position relative to screen border in the back.
+		bit 10 = ?
+		bit 12 = Unknown or no effect. Akiha's 217 only
 	param4: Flagset 2
+		bit 0 = ??
 		bit 2 = Remove when parent is thrown.
 		bit 6 = Doesn't freeze on super flash.
 		bit 7 = Doesn't move with camera.
 		bit 8 = Position is relative to opponent.
 	param8: Angle
-	param9: ??
+	param9: Related to condition 2??
 
 2 Various effects
 	no: (Does the number itself have any meaning?)
@@ -114,14 +120,12 @@
 6 Buttload effects
 	no:
 	0
-	1
 	2
 	3
 	7
 	8
 	10
 	11
-	12
 	13
 	14
 	15
@@ -138,7 +142,7 @@
 	101
 	102
 	103
-	105
+	
 	107
 	110
 	111
@@ -150,15 +154,24 @@
 	155
 	200
 	252
+	1 Tremor
+		param1: duration/intensity
 	4 Regenerate HP (red life only?)
 		param1: amount
 	5 Unknown, used in throws.
+		param1:
+			6 - Randomly makes actors rotate in the opposite direction.
 	6 Set movement vector
 		param1: X speed
 		param2: random added X speed
+	12 Move parent to pos?
+		param5:	1 Opponent position. 2 Child position.
 	19 Prorate (used with effect 5)
 		param1: proration value
 		param2: type. 0 absolute, 1 multiplicative, 2 substractive
+	105 Set variable?
+		param1: Variable id.
+		param2: Value.
 
 8 Spawn actor from effect.ha6
 
