@@ -109,7 +109,7 @@ void MainPane::Draw()
 					patCopyStack.push_back(SequenceWId{currState.pattern, *seq});
 				}
 				im::SameLine(0,20.f);
-				if(im::Button("Pop all copies"))
+				if(im::Button("Pop all and paste"))
 				{
 					PopCopies();
 					RegenerateNames();
@@ -132,12 +132,6 @@ void MainPane::Draw()
 				if (im::TreeNode("Animation data"))
 				{
 					AfDisplay(&frame.AF);
-					if(im::Button("Range paste"))
-					{
-						ranges[0] = 0;
-						ranges[1] = 0;
-						rangeWindow = !rangeWindow;
-					}
 					im::TreePop();
 					im::Separator();
 				}
@@ -170,8 +164,13 @@ void MainPane::Draw()
 							currState.frame--;
 					}
 
+					if(im::Button("Range paste"))
+					{
+						ranges[0] = 0;
+						ranges[1] = 0;
+						rangeWindow = !rangeWindow;
+					}
 					
-
 					im::TreePop();
 					im::Separator();
 				}

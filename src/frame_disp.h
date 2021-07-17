@@ -140,10 +140,10 @@ inline void AsDisplay(Frame_AS *as)
 		case 1: Tooltip("Force clean vector (kill dash momentum)"); break;
 		case 2: Tooltip("Don't transition to walking"); break;
 		case 4: Tooltip("Can ground tech"); break;
-		case 5: Tooltip("Unknown"); break;
-		case 8: Tooltip("Unknown"); break;
-		case 9: Tooltip("Unknown"); break;
-		case 12: Tooltip("Unknown"); break;
+		case 5: Tooltip("Unknown 5"); break;
+		case 8: Tooltip("Unknown 8"); break;
+		case 9: Tooltip("Unknown 9"); break;
+		case 12: Tooltip("Unknown 12"); break;
 		case 31: Tooltip("Vector initialization only at the beginning (?)"); break;
 	}
 	
@@ -192,19 +192,19 @@ inline void AtDisplay(Frame_AT *at)
 		"Strong kick",
 		"Super punch",
 		"Super kick",
-		"Slash (sparks)",
+		"Old cut (slash)",
 		"Burn",
 		"Freeze",
 		"Shock",
-		"Big light (SE only?)",
-		"Small light (SE only?)",
+		"Big flash (SE)",
+		"Small flash (SE)",
 		"None",
 		"Strong hit",
 		"Double slash",
 		"Super slash",
-		"Tiny cut",
-		"Fat cut",
-		"Big fat cut",
+		"Weak cut",
+		"Medium cut",
+		"Strong cut",
 		"Faint wave",
 		//Are there more is it OOB?
 	};
@@ -214,14 +214,14 @@ inline void AtDisplay(Frame_AT *at)
 		"Burn",
 		"Freeze",
 		"Shock",
-		"Confuse"
+		"Confusion"
 	};
 
 	const char* const vectorFlags[] = {
 		"Default",
 		"Reverse",
 		"Nullify",
-		"Both?"
+		"Both"
 	};
 
 	const char* const hitStopList[] = {
@@ -243,11 +243,11 @@ inline void AtDisplay(Frame_AT *at)
 		case 0: Tooltip("Stand blockable"); break;
 		case 1: Tooltip("Air blockable"); break;
 		case 2: Tooltip("Crouch blockable"); break;
-		case 8: Tooltip("Miss if enemy is standing?"); break;
-		case 9: Tooltip("Miss if enemy is airborne?"); break;
-		case 10: Tooltip("Miss if enemy is crouching?"); break;
-		case 11: Tooltip("Miss if enemy is in hitstun?"); break;
-		case 12: Tooltip("Miss if enemy is in blockstun?"); break;
+		case 8: Tooltip("Miss if enemy is standing"); break;
+		case 9: Tooltip("Miss if enemy is airborne"); break;
+		case 10: Tooltip("Miss if enemy is crouching"); break;
+		case 11: Tooltip("Miss if enemy is in hitstun"); break;
+		case 12: Tooltip("Miss if enemy is in blockstun"); break;
 		case 13: Tooltip("Miss if OTG"); break;
 		case 14: Tooltip("Hit only in hitstun?"); break;
 		case 15: Tooltip("Can't hit playable character?"); break;
@@ -269,17 +269,17 @@ inline void AtDisplay(Frame_AT *at)
 		case 9: Tooltip("Friendly fire?"); break;
 		case 10: Tooltip("No self hitstop"); break;
 
-		case 12: Tooltip("Unknown"); break;
+		case 12: Tooltip("Unknown 12"); break;
 		case 13: Tooltip("Can't be shielded"); break;
-		case 14: Tooltip("Unknown"); break;
+		case 14: Tooltip("Unknown 14"); break;
 		
 		case 16: Tooltip("Use custom blockstop"); break;
 		case 17: Tooltip("OTG Relaunches"); break;
 		case 18: Tooltip("Can't counterhit"); break;
-		case 19: Tooltip("Unknown"); break;
-		case 20: Tooltip("Unknown"); break;
-		case 21: Tooltip("Unknown"); break;
-		case 22: Tooltip("Unknown"); break;
+		case 19: Tooltip("Unknown 19"); break;
+		case 20: Tooltip("Unknown 20"); break;
+		case 21: Tooltip("Unknown 21"); break;
+		case 22: Tooltip("Unknown 22"); break;
 
 		//Unused or don't exist in melty.
 		//case 25: Tooltip("No hitstop on multihit?"); break; 
@@ -371,9 +371,9 @@ inline void AfDisplay(Frame_AF *af)
 	};
 
 	const char* const animationList[] = {
-		"End",
-		"Next",
-		"Go to"
+		"Go to pattern",
+		"Next frame",
+		"Go to frame"
 	};
 
 	constexpr float width = 50.f;
@@ -402,7 +402,7 @@ inline void AfDisplay(Frame_AF *af)
 	im::InputInt("Landing frame", &af->landJump, 0, 0);
 
 	im::SetNextItemWidth(width);
-	im::InputInt("Priority", &af->priority, 0, 0); im::SetNextItemWidth(width);
+	im::InputInt("Z-Priority", &af->priority, 0, 0); im::SetNextItemWidth(width);
 	im::InputInt("Loop N times", &af->loopCount, 0, 0); im::SameLine(0,20); im::SetNextItemWidth(width);
 	im::InputInt("End of loop", &af->loopEnd, 0, 0);
 	im::InputInt("Duration", &af->duration, 1, 0);

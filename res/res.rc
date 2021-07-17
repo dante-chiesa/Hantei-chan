@@ -1,5 +1,4 @@
 #include "resource.h"
 
 AAAA ICON "ico.ico"
-NOTO_SANS_JP_F RCDATA "NotoSansJP-Regular.otf" 
-CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "ha6gui.exe.manifest"
+NOTO_SANS_JP_F RCDATA "NotoSansJP-Regular.otf"
