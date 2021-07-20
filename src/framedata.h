@@ -176,6 +176,7 @@ public:
 	void initEmpty();
 	bool load(const char *filename, bool patch = false);
 	void save(const char *filename);
+	void saveChar(std::string filename);
 
 	//Probably unnecessary.
 	//bool load_move_list(Pack *pack, const char *filename);

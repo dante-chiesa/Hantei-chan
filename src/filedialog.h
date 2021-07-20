@@ -7,7 +7,8 @@ enum {
 	CG,
 	PAL,
 	TXT,
-	PAT
+	PAT,
+	CHR,
 };
 }
 

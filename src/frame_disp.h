@@ -120,8 +120,8 @@ inline void AsDisplay(Frame_AS *as)
 	switch (flagIndex)
 	{
 		case 0: Tooltip("Set Y"); break;
-		case 4: Tooltip("Set X"); break;
 		case 1: Tooltip("Add Y"); break;
+		case 4: Tooltip("Set X"); break;
 		case 5: Tooltip("Add X"); break;
 	}
 

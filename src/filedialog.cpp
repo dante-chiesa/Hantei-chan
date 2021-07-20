@@ -37,6 +37,10 @@ std::string FileDialog(int fileType, bool save)
 	{
 		ofn.lpstrFilter = "Parts (*.pat)\0*.pat\0All\0*.*\0";
 	}
+	else if(fileType == fileType::CHR)
+	{
+		ofn.lpstrFilter = "Character (*.char)\0*.char\0All\0*.*\0";
+	}
 	else
 	{
 		ofn.lpstrFilter = "All\0*.*\0";
