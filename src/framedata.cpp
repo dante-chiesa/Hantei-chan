@@ -250,10 +250,12 @@ void FrameData::saveChar(std::string filename)
 			p.cancelType[1] = frame.AS.cancelSpecial;
 			p.chType = counterType;
 			p.flags = frame.AS.canMove;
-			p.flags &= (frame.AS.hitsNumber > 0) << 31;
+			p.flags |= (frame.AS.hitsNumber > 0) << 31;
 			//p.MinCancelLvl = frame.AS.cancelNormal > 0;
 			memcpy(p.accel, frame.AS.accel, sizeof(float)*2);
 			memcpy(p.vel, frame.AS.speed, sizeof(float)*2);
+			p.vel[1] = -p.vel[1];
+			p.accel[1] = -p.accel[1];
 			auto movFlags = frame.AS.movementFlags; 
 			if(movFlags & 0x1)
 				p.movementType[1] = 1; //keep; set-set; add-set; add-add
@@ -268,6 +270,8 @@ void FrameData::saveChar(std::string filename)
 			for(auto it = frame.hitboxes.begin(); it != frame.hitboxes.end(); it++)
 			{
 				Hitbox &box = it->second;
+				box.xy[1] = -box.xy[1];
+				box.xy[3] = -box.xy[3];
 				if(it->first == 0)
 				{
 					cframe.colbox.resize(4);
