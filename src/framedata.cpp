@@ -251,6 +251,7 @@ void FrameData::saveChar(std::string filename)
 			p.chType = counterType;
 			p.flags = frame.AS.canMove;
 			p.flags |= (frame.AS.hitsNumber > 0) << 31;
+			p.flags |= ((frame.AS.statusFlags[0] & 0x4) > 0) << 1;
 			//p.MinCancelLvl = frame.AS.cancelNormal > 0;
 			memcpy(p.accel, frame.AS.accel, sizeof(float)*2);
 			memcpy(p.vel, frame.AS.speed, sizeof(float)*2);
