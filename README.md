@@ -1,18 +1,14 @@
 # Hantei-chan #
-Hantei6 GUI editor for Melty Blood.
-I don't really care too much about modding melty so I won't be adding more features.
-Feel free to fork it. By the way, this program only for windows. 
+HA6/Hantei6 GUI editor for Melty Blood. It has partial support for UNIB.
+It's not being actively worked, feel free to fork it. This program only for windows. 
 
 Stuff that needs to be done:
 * Play animations
-* Copy pasting lots of stuff 
 * Redo/Undo stack
 * Display .pat graphics
 * Actual support for Under Night In Birth.
 * A sprite browser
-* Fix the held spinner controls
-* More hotkeys, like Ctrl+S
-* Other QoL features
+* Hotkeys, such as Ctrl+S
 
 ![screenshot](https://user-images.githubusercontent.com/39018575/119175726-311f4580-ba38-11eb-83dd-2d7d57c17f02.png)
 
@@ -27,7 +23,7 @@ You can switch frames/patterns with the arrow keys.
 You can switch the currently selected type of box with Z and X.
 Don't try to press these hotkeys while you're drawing a box. You'll just make a mess.
 
-There's also a slight bug when you click a control when the window is unfocused. Yeah, idk.
+There's also a slight bug when you click a control when the window is unfocused.
 
 -----------------------
 ## How to build ##

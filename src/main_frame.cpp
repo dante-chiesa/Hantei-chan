@@ -376,6 +376,7 @@ void MainFrame::Menu(unsigned int errorPopupId)
 				}
 			}
 
+			#ifdef EXPORT2CHAR
 			if (ImGui::MenuItem("Export to char 0.99.3...")) 
 			{
 				std::string &&file = FileDialog(fileType::CHR, true);
@@ -384,6 +385,7 @@ void MainFrame::Menu(unsigned int errorPopupId)
 					framedata.saveChar(file);
 				}
 			}
+			#endif
 
 			ImGui::Separator();
 			if (ImGui::MenuItem("Load CG...")) 
