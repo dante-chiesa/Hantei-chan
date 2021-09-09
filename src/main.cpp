@@ -71,6 +71,10 @@ bool LoopEvents()
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow)
 {
+	std::ofstream cerrFile;
+	cerrFile.open("hanteichan.log");
+	auto cerr_buf = std::cerr.rdbuf(cerrFile.rdbuf());
+	
 	bool useIni = true;
 	int argC;
 	PWSTR* argV = CommandLineToArgvW(pCmdLine, &argC);

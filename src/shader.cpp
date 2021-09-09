@@ -5,6 +5,7 @@
 #include <string>
 #include <windows.h>
 #include <glad/glad.h>
+#include <iostream>
 
 std::string ReadFile(const char *filePath)
 {
@@ -20,6 +21,8 @@ std::string ReadFile(const char *filePath)
         std::getline(fileStream, line);
         content.append(line + "\n");
     }
+
+	//std::cerr <<"TEST -> \n"<< content << "\n";
 
     fileStream.close();
     return content;
@@ -49,7 +52,7 @@ GLuint CreateShader(const char **src, GLenum type)
 				ss << "Other ";
 		}
 		ss << "Shader error:\n" << log;
-		MessageBoxA(nullptr, ss.str().c_str(), "Shader compile error", MB_ICONSTOP);
+		std::cerr << ss.str() << "\n";
 	}
 	return shader;
 }
@@ -58,7 +61,7 @@ Shader::Shader(): program(0)
 {
 	program = glCreateProgram();
 	if (program == 0)
-		MessageBoxA(nullptr, "Shader program creation failed", "Shader program", MB_ICONSTOP);
+		std::cerr << "Shader program creation failed\n";
 }
 Shader::~Shader()
 {
@@ -87,6 +90,7 @@ void Shader::BindAttrib(const char* name, int index)
 
 void Shader::LoadShader(const char *vertex_path, const char *fragment_path, bool sourceString)
 {
+	std::string vertShaderStr, fragShaderStr;
 	const char *vertShaderSrc = "";
 	const char *fragShaderSrc = "";
 
@@ -97,7 +101,7 @@ void Shader::LoadShader(const char *vertex_path, const char *fragment_path, bool
 	}
 	else
 	{
-		std::string vertShaderStr, fragShaderStr;
+		
 		if(vertex_path != nullptr && fragment_path != nullptr)
 		{
 			vertShaderStr = ReadFile(vertex_path);
@@ -124,9 +128,11 @@ void Shader::LoadShader(const char *vertex_path, const char *fragment_path, bool
 		glGetProgramInfoLog(program, 2048, 0, log);
 		ss << "Shader linking error: "<<vertex_path<<" & "<<fragment_path<<":\n" << log <<"\n";
 	}
+	else
+		std::cerr <<"...No errors.\n";
 
 	if(!ss.str().empty())
-		MessageBoxA(nullptr, ss.str().c_str(), "Shader program", MB_ICONSTOP);
+		std::cerr << ss.str() << "\n";
 
 	glDeleteShader(myVertexShader);
 	glDeleteShader(myFragShader);

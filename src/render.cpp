@@ -9,6 +9,7 @@
 #include <windows.h>
 #include <glad/glad.h>
 #include <sstream>
+#include <iostream>
 
 #include "hitbox.h"
 
@@ -29,7 +30,7 @@ void main()
     
     Frag_Color = vec4(Color, Alpha);
     gl_Position = ProjMtx * vec4(Position, 1);
-};
+}
 )";
 
 const char* simpleSrcFrag = R"(
@@ -40,7 +41,7 @@ varying vec4 Frag_Color;
 void main()
 {
     gl_FragColor = Frag_Color;
-};
+}
 )";
 
 const char* texturedSrcVert = R"(
@@ -59,7 +60,7 @@ void main()
     Frag_UV = UV;
     Frag_Color = Color;
     gl_Position = ProjMtx * vec4(Position.xy, 0, 1);
-};
+}
 )";
 
 const char* texturedSrcFrag = R"(
@@ -74,7 +75,7 @@ void main()
     vec4 col = texture2D(Texture, Frag_UV.st);
     
     gl_FragColor = col * Frag_Color;
-};
+}
 )";
 
 
@@ -101,17 +102,19 @@ y(0), offsetY(0),
 rotX(0), rotY(0), rotZ(0),
 blendingMode(normal)
 {
+	std::cerr<<"Simple\n";
 	sSimple.BindAttrib("Position", 0);
 	sSimple.BindAttrib("Color", 1);
-	//sSimple.LoadShader("src/simple.vert", "src/simple.frag");
+	//sSimple.LoadShader("shd/simple.vert", "shd/simple.frag");
 	sSimple.LoadShader(simpleSrcVert, simpleSrcFrag, true);
 
 	sSimple.Use();
 
+	std::cerr<<"Textured\n";
 	sTextured.BindAttrib("Position", 0);
 	sTextured.BindAttrib("UV", 1);
 	sTextured.BindAttrib("Color", 2);
-	//sTextured.LoadShader("src/textured.vert", "src/textured.frag");
+	//sTextured.LoadShader("shd/textured.vert", "shd/textured.frag");
 	sTextured.LoadShader(texturedSrcVert, texturedSrcFrag, true);
 	
 	lAlphaS = sSimple.GetLoc("Alpha");
@@ -145,11 +148,14 @@ blendingMode(normal)
 
 void Render::Draw()
 {
-	if(int err = glGetError())
+	static unsigned int lastError = 0;
+	if(int err = glGetError() && lastError != err)
 	{
+		lastError = err;
 		std::stringstream ss;
 		ss << "GL Error: 0x" << std::hex << err << "\n";
-		MessageBoxA(nullptr, ss.str().c_str(), "GL Error", MB_ICONSTOP);
+		std::cerr << ss.str()<<"\n";
+		//MessageBoxA(nullptr, ss.str().c_str(), "GL Error", MB_ICONSTOP);
 		//PostQuitMessage(1);
 	}
 
