@@ -75,6 +75,12 @@ void MainPane::Draw()
 					currState.frame = 0;
 				else if(currState.frame > nframes)
 					currState.frame = nframes;
+				
+				if(im::Button("Animate"))
+				{
+					currState.animating = !currState.animating;
+					currState.animeSeq = currState.pattern;
+				}
 			}
 			else
 			{
@@ -87,7 +93,7 @@ void MainPane::Draw()
 				
 			}
 
-			im::BeginChild("FrameInfo", {0, im::GetWindowSize().y-im::GetFrameHeight()*3}, false, ImGuiWindowFlags_HorizontalScrollbar);
+			im::BeginChild("FrameInfo", {0, im::GetWindowSize().y-im::GetFrameHeight()*4-8}, false, ImGuiWindowFlags_HorizontalScrollbar);
 			if (im::TreeNode("Pattern data"))
 			{
 				if(im::InputText("Pattern name", &seq->name))

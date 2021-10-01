@@ -36,10 +36,14 @@ private:
 
 	Render render;
 	FrameData framedata;
-	FrameState currState;
+	FrameState currState{};
 	CG cg;
 	Parts parts;
 	int curPalette;
+
+	//Animation
+	int duration = 0;
+	int loopCounter;
 
 	std::string currentFilePath;
 

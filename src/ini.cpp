@@ -75,7 +75,7 @@ void InitIni()
 	ImGui::LoadIniSettingsFromDisk(context.IO.IniFilename);
 }
 
-bool LoadFromIni(FrameData *framedata, CG *cg, const std::string& iniPath)
+bool LoadFromIni(FrameData *framedata, CG *cg, Parts *parts, const std::string& iniPath)
 {
 	int fileNum = GetPrivateProfileIntA("DataFile", "FileNum", 0, iniPath.c_str());
 	if(fileNum)
@@ -101,6 +101,16 @@ bool LoadFromIni(FrameData *framedata, CG *cg, const std::string& iniPath)
 
 			std::string fullpath = folder + "\\" + cgFile;
 			cg->load(fullpath.c_str());
+		}
+
+		int patNum = GetPrivateProfileIntA("PAniFile", "FileNum", 0, iniPath.c_str());
+		if(patNum == 1)
+		{
+			char patFile[256]{};
+			GetPrivateProfileStringA("PAniFile", "File00", nullptr, patFile, 256, iniPath.c_str());
+
+			std::string fullpath = folder + "\\" + patFile;
+			parts->Load(fullpath.c_str());
 		}
 
 		return true;

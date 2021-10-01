@@ -5,13 +5,13 @@
 #include "parts.h"
 
 
-void TestHa6()
+void TestHa6(const char *where)
 {
 	namespace fs = std::filesystem;
 
 	FrameData fd;
 
-	std::string folderIn = "data/";
+	std::string folderIn = where;
 	for(const fs::directory_entry &file : fs::directory_iterator(folderIn))
 	{
 
@@ -30,13 +30,13 @@ void TestHa6()
 	}
 }
 
-void TestPat()
+void TestPat(const char *where)
 {
 
 	namespace fs = std::filesystem;
 	Parts pat;
 
-	std::string folderIn = "data/";
+	std::string folderIn = where;
 	for(const fs::directory_entry &file : fs::directory_iterator(folderIn))
 	{
 

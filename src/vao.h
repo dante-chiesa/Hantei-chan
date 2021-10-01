@@ -17,7 +17,6 @@ public:
 private:
 	AttribType type;
 	unsigned int usage;
-	bool loaded;
 	int stride;
 
 	struct memPtr
@@ -49,6 +48,7 @@ public:
 	void UpdateBuffer(int which, void *data, size_t count = 0);
 	void Bind();
 	void Load();
+	void Clear();
 	
 };
 

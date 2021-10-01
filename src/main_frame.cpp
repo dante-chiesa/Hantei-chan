@@ -146,6 +146,49 @@ void MainFrame::RenderUpdate()
 	if((seq = framedata.get_sequence(currState.pattern)) &&
 		seq->frames.size() > 0)
 	{
+		if(currState.animeSeq != currState.pattern)
+			loopCounter = 0;
+		if(currState.animating)
+		{
+			currState.animeSeq = currState.pattern;
+			if(duration < 0)
+			{
+				auto seq = framedata.get_sequence(currState.pattern);
+				if(seq && !seq->frames.empty())
+				{
+					auto &af = seq->frames[currState.frame].AF;
+					if(af.aniType == 1)
+						currState.frame += 1;
+					else if(af.aniType == 2)
+					{
+						if((af.aniFlag & 0x2) && loopCounter < 0)
+						{
+							if(af.aniFlag & 0x8)
+								currState.frame += af.loopEnd;
+							else
+								currState.frame = af.loopEnd;
+						}
+						else
+						{
+							if(af.aniFlag & 0x4)
+								currState.frame += af.jump;
+							else
+								currState.frame = af.jump;
+							if(af.aniFlag & 0x2)
+								--loopCounter;
+						}
+					}
+					else
+						currState.frame = 0;
+					if(currState.frame >= seq->frames.size())
+						currState.frame = 0;
+					
+					duration = seq->frames[currState.frame].AF.duration;
+				}
+			}
+			--duration;
+		}
+
 		auto &frame =  seq->frames[currState.frame];
 		currState.spriteId = frame.AF.spriteId;
 		currState.usePat = frame.AF.usePat;
@@ -158,6 +201,8 @@ void MainFrame::RenderUpdate()
 		render.rotZ = frame.AF.rotation[2];
 		render.scaleX = frame.AF.scale[0];
 		render.scaleY = frame.AF.scale[1];
+		if(frame.AF.loopCount>0)
+			loopCounter = frame.AF.loopCount;
 		
 		switch (frame.AF.blend_mode)
 		{
@@ -263,12 +308,12 @@ void MainFrame::SetZoom(int level)
 	zoom_idx = level;
 	switch (level)
 	{
-	case 0: render.scale = 0.5f; break;
-	case 1: render.scale = 1.f; break;
-	case 2: render.scale = 1.5f; break;
-	case 3: render.scale = 2.f; break;
-	case 4: render.scale = 3.f; break;
-	case 5: render.scale = 4.f; break;
+	case 0: render.SetScale(0.5f); break;
+	case 1: render.SetScale(1.f); break;
+	case 2: render.SetScale(1.5f); break;
+	case 3: render.SetScale(2.f); break;
+	case 4: render.SetScale(3.f); break;
+	case 5: render.SetScale(4.f); break;
 	}
 }
 
@@ -309,7 +354,7 @@ void MainFrame::Menu(unsigned int errorPopupId)
 				std::string &&file = FileDialog(fileType::TXT);
 				if(!file.empty())
 				{
-					if(!LoadFromIni(&framedata, &cg, file))
+					if(!LoadFromIni(&framedata, &cg, &parts, file))
 					{
 						ImGui::OpenPopup(errorPopupId);
 					}

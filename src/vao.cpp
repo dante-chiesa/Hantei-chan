@@ -4,7 +4,7 @@
 #include <sstream>
 
 Vao::Vao(AttribType _type, unsigned int _usage):
-type(_type), usage(_usage), loaded(false), stride(0), totalSize(0), vaoId(0), vboId(0),
+type(_type), usage(_usage), stride(0), totalSize(0), vaoId(0), vboId(0),
 quadCount(nullptr), quadIndexes(nullptr)
 {
 	switch(type)
@@ -22,6 +22,18 @@ Vao::~Vao()
 {
 	glDeleteBuffers(1, &vboId);
 	delete[] quadIndexes;
+}
+
+void Vao::Clear()
+{
+	glDeleteBuffers(1, &vboId);
+	delete[] quadIndexes;
+	vaoId = 0;
+	vboId = 0;
+	totalSize = 0;
+	quadCount = nullptr;
+	quadIndexes = nullptr;
+	dataPointers.clear();
 }
 
 int Vao::Prepare(size_t size, void *ptr)

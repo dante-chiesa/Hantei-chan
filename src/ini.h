@@ -2,6 +2,7 @@
 #define INI_H_GUARD
 #include "framedata.h"
 #include "cg.h"
+#include "parts.h"
 
 extern struct Settings
 {
@@ -19,7 +20,7 @@ extern struct Settings
 	bool idleUpdate = true;
 } gSettings;
 
-bool LoadFromIni(FrameData *framedata, CG *cg, const std::string& iniPath);
+bool LoadFromIni(FrameData *framedata, CG *cg, Parts *parts, const std::string& iniPath);
 void InitIni();
 
 #endif /* INI_H_GUARD */

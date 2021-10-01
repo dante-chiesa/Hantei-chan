@@ -3,6 +3,7 @@
 /build
 /rel
 /data
+/.vscode
 
 *.ini
 *.exe

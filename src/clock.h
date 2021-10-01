@@ -6,7 +6,7 @@
 class Clock
 {
 public:
-	double targetSpf = 0.01600;
+	double targetSpf = 0.016666;
 
 	std::chrono::time_point<std::chrono::high_resolution_clock> startClock; 
 	void SleepUntilNextFrame();

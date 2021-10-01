@@ -37,6 +37,27 @@ void Texture::Load(ImageData *data)
 	isLoaded = true;
 }
 
+void Texture::LoadDirect(char *data, int w, int h, bool bgr)
+{
+	isApplied = true;
+	glGenTextures(1, &id);
+
+	glBindTexture(GL_TEXTURE_2D, id);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	GLenum extType = GL_RGBA;
+	if(bgr)
+		extType = GL_BGRA;
+	GLenum intType = GL_RGBA8;
+	
+	glTexImage2D(GL_TEXTURE_2D, 0, intType, w, h, 0, extType, GL_UNSIGNED_BYTE, data);
+}
+
 void Texture::Apply(bool repeat, bool linearFilter)
 {
 	isApplied = true;
@@ -70,8 +91,8 @@ void Texture::Apply(bool repeat, bool linearFilter)
 	GLenum intType = GL_RGBA8;
 	
 	glTexImage2D(GL_TEXTURE_2D, 0, intType, image->width, image->height, 0, extType, GL_UNSIGNED_BYTE, image->pixels);
-
 }
+
 void Texture::Unapply()
 {
 	isApplied = false;

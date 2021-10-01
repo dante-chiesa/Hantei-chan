@@ -31,7 +31,7 @@ private:
 	int quadsToDraw;
 
 	int lProjectionS, lProjectionT;
-	int lAlphaS;
+	int lAlphaS, lAddColorT;
 	Shader sSimple;
 	Shader sTextured;
 	Texture texture;
@@ -45,6 +45,8 @@ private:
 	void SetModelView(glm::mat4&& view);
 	void SetMatrix(int location);
 	void SetBlendingMode();
+	
+	float iScale;
 
 public:
 	bool filter;
@@ -63,6 +65,7 @@ public:
 	void SwitchImage(int id, bool pat = false);
 	void DontDraw();
 	void SetImageColor(float *rgbaArr);
+	void SetScale(float scale);
 
 	enum blendType{
 		normal,

@@ -1,17 +1,35 @@
 #include "clock.h"
-#include <thread>
+#include <windows.h>
+#include <timeapi.h>
 
+UINT GetMinTimer(){
+	TIMECAPS tc;
+	timeGetDevCaps(&tc, sizeof(tc));
+	return tc.wPeriodMin;
+};
+LONGLONG GetFreq(){
+	LARGE_INTEGER freq;
+	QueryPerformanceFrequency(&freq);
+	return freq.QuadPart;
+}
+auto frequency = GetFreq();
+UINT minTimer = GetMinTimer(); 
+LARGE_INTEGER startClockHr{};
 void Clock::SleepUntilNextFrame()
 {
-	std::chrono::duration<double> targetDur(targetSpf);
-	std::chrono::duration<double> dur; 
+	timeBeginPeriod(minTimer);
+	ULONGLONG targetCount = frequency*(targetSpf);
+	ULONGLONG dif; 
 
-	auto now = std::chrono::high_resolution_clock::now();
-	if((dur = now - startClock) < targetDur)
+	LARGE_INTEGER nowTicks;
+	QueryPerformanceCounter(&nowTicks);
+	if((dif = nowTicks.QuadPart - startClockHr.QuadPart) < targetCount)
 	{
-		std::this_thread::sleep_for((targetDur-dur));
+		LONG sleepTime = ((targetCount-dif)/(frequency/1000));
+		if(sleepTime>0)
+			Sleep(sleepTime);
 	}
 
-
-	startClock = std::chrono::high_resolution_clock::now();
+	QueryPerformanceCounter(&startClockHr);
+	timeEndPeriod(minTimer);
 }

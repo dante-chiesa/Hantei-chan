@@ -22,6 +22,7 @@ public:
 	
 	void Load(ImageData *data);
 	void Apply(bool repeat = false, bool linearFilter = false);
+	void LoadDirect(char *data, int w, int h, bool bgr = true);
 	void Unapply();
 	void Unload();
 };

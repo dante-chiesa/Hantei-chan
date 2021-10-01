@@ -299,7 +299,7 @@ unsigned int *fd_frame_IF_load(unsigned int *data, const unsigned int *data_end,
 				for (int i = 0; i < count; ++i) {
 					IF->parameters[i] = data[i+1];
 				}
-				if(IF->type == 6)
+/* 				if(IF->type == 6)
 				{
 					if(maxCount < count)
 						 maxCount = count;
@@ -310,7 +310,7 @@ unsigned int *fd_frame_IF_load(unsigned int *data, const unsigned int *data_end,
 						std::cout <<" "<<IF->parameters[i];
 					}
 					std::cout<<"\n";
-				}
+				} */
 			} else {
 				test.Print(data, data_end);
 				std::cout <<"\tUnhandled number of IF parameters: " << count <<"\n";

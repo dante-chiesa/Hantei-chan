@@ -2,6 +2,9 @@
 #define CONTEXTGL_H_GUARD
 
 #include <windows.h>
+#include <glad/glad.h>
+#include <GL/wglext.h>
+#include <iostream>
 
 class ContextGl
 {
@@ -37,13 +40,32 @@ public:
 		int format = ChoosePixelFormat(dc, &pfd);
 		SetPixelFormat(dc, format, &pfd);
 
-		context = wglCreateContext (dc);
-		if(!context)
+		auto tempContext = wglCreateContext (dc);
+		if(!tempContext)
 			MessageBox(hWnd, L"Couldn't create context", L"wglCreateContext", MB_OK);
-		wglMakeCurrent(dc, context);
+		wglMakeCurrent(dc, tempContext);
 
-
-		//
+		int attributes[] = {
+			WGL_CONTEXT_MAJOR_VERSION_ARB, 3, // Set the MAJOR version of OpenGL to 3
+			WGL_CONTEXT_MINOR_VERSION_ARB, 2, // Set the MINOR version of OpenGL to 2
+			WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB, // Set our OpenGL context to be forward compatible
+			0
+		};
+		
+		PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
+		if(wglCreateContextAttribsARB){
+			context = wglCreateContextAttribsARB(dc, NULL, attributes);
+			wglMakeCurrent(nullptr, nullptr); 
+			wglDeleteContext(tempContext); 
+			wglMakeCurrent(dc, context);
+		
+			PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
+			wglSwapIntervalEXT(0); //VSYNC NOT LOCKED TO 60
+		}
+		else {
+			tempContext = tempContext;
+			std::cout<< "No OpenGL 3.2 Support, fallback Version 2.1"<<"\n";
+		}
 	}
 
 	~ContextGl()

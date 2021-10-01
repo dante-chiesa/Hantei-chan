@@ -74,6 +74,10 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 	std::ofstream cerrFile;
 	cerrFile.open("hanteichan.log");
 	auto cerr_buf = std::cerr.rdbuf(cerrFile.rdbuf());
+
+	std::ofstream coutFile;
+	coutFile.open("cout.txt");
+	auto cout_buf = std::cout.rdbuf(coutFile.rdbuf());
 	
 	bool useIni = true;
 	int argC;
@@ -82,12 +86,15 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 	{
 		char * arg = (char*)(argV[i]);
 		wcstombs(arg, argV[i], wcslen(argV[i])+1);
-		if(!strcmp(arg, "--test"))
+		if(!strcmp(arg, "--test") && i+1<argC)
 		{
-			std::ofstream coutFile;
-			coutFile.open("cout.txt");
-			auto cout_buf = std::cout.rdbuf(coutFile.rdbuf());
-			TestHa6();
+			i+=1;
+			char * where = (char*)(argV[i]);
+			wcstombs(where, argV[i], wcslen(argV[i])+1);
+			
+			
+			//TestHa6(where);
+			TestPat(where);
 			LocalFree(argV);
 			return 0;
 		}

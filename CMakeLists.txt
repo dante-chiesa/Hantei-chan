@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.13...3.19)
-project(hanteichan VERSION 1.0.28 LANGUAGES C CXX)
+project(hanteichan VERSION 1.1.0 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -42,7 +42,7 @@ target_include_directories(${EXE} PRIVATE ".")
 target_compile_definitions(${EXE} PRIVATE UNICODE _UNICODE WIN32_LEAN_AND_MEAN HA6GUIVERSION="${CMAKE_PROJECT_VERSION}")
 
 find_package(OpenGL REQUIRED)
-target_link_libraries(${EXE} PRIVATE imgui glad OpenGL::GL glm)
+target_link_libraries(${EXE} PRIVATE imgui glad OpenGL::GL glm winmm)
 
 if(MINGW)
 	message(status "With -municode")

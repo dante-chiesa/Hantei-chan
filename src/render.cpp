@@ -27,9 +27,8 @@ uniform float Alpha;
 
 void main()
 {
-    
-    Frag_Color = vec4(Color, Alpha);
-    gl_Position = ProjMtx * vec4(Position, 1);
+	Frag_Color = vec4(Color, Alpha);
+	gl_Position = ProjMtx * vec4(Position, 1);
 }
 )";
 
@@ -40,7 +39,7 @@ varying vec4 Frag_Color;
 
 void main()
 {
-    gl_FragColor = Frag_Color;
+	gl_FragColor = Frag_Color;
 }
 )";
 
@@ -57,9 +56,9 @@ uniform mat4 ProjMtx;
 
 void main()
 {
-    Frag_UV = UV;
-    Frag_Color = Color;
-    gl_Position = ProjMtx * vec4(Position.xy, 0, 1);
+	Frag_UV = UV;
+	Frag_Color = Color;
+	gl_Position = ProjMtx * vec4(Position.xy, 0, 1);
 }
 )";
 
@@ -70,11 +69,13 @@ uniform sampler2D Texture;
 varying vec2 Frag_UV;
 varying vec4 Frag_Color;
 
+uniform vec3 AddColor;
+
 void main()
 {
-    vec4 col = texture2D(Texture, Frag_UV.st);
-    
-    gl_FragColor = col * Frag_Color;
+	vec4 col = texture2D(Texture, Frag_UV.st);
+	col.rgb += AddColor;
+	gl_FragColor = col * Frag_Color;
 }
 )";
 
@@ -120,6 +121,7 @@ blendingMode(normal)
 	lAlphaS = sSimple.GetLoc("Alpha");
 	lProjectionS = sSimple.GetLoc("ProjMtx");
 	lProjectionT = sTextured.GetLoc("ProjMtx");
+	lAddColorT = sTextured.GetLoc("AddColor");
 
 	vSprite.Prepare(sizeof(imageVertex), imageVertex);
 	vSprite.Load();
@@ -146,6 +148,14 @@ blendingMode(normal)
 	glEnable(GL_DEPTH_TEST);
 }
 
+void Render::SetScale(float newScale)
+{
+	iScale = newScale;
+	scale = iScale;
+	if(curPat)
+		scale *= 0.5f;
+}
+
 void Render::Draw()
 {
 	static unsigned int lastError = 0;
@@ -155,9 +165,12 @@ void Render::Draw()
 		std::stringstream ss;
 		ss << "GL Error: 0x" << std::hex << err << "\n";
 		std::cerr << ss.str()<<"\n";
+		//assert(0);
 		//MessageBoxA(nullptr, ss.str().c_str(), "GL Error", MB_ICONSTOP);
 		//PostQuitMessage(1);
 	}
+
+	
 
 	//Lines
 	glm::mat4 view = glm::mat4(1.f);
@@ -174,21 +187,40 @@ void Render::Draw()
 	view = glm::mat4(1.f);
 	view = glm::scale(view, glm::vec3(scale, scale, 1.f));
 	view = glm::translate(view, glm::vec3(x,y,0.f));
+	
 	view = glm::scale(view, glm::vec3(scaleX,scaleY,0));
 	view = glm::rotate(view, rotZ*tau, glm::vec3(0.0, 0.f, 1.f));
 	view = glm::rotate(view, rotY*tau, glm::vec3(0.0, 1.f, 0.f));
-	view = glm::rotate(view, rotX*tau, glm::vec3(1.0, 0.f, 0.f));
+	auto partView = view = glm::rotate(view, rotX*tau, glm::vec3(1.0, 0.f, 0.f));
 	view = glm::translate(view, glm::vec3(-128+offsetX,-224+offsetY,0.f));
-	SetModelView(std::move(view));
+	partView = glm::translate(partView, glm::vec3(offsetX,offsetY,0.f));
 	sTextured.Use();
-	SetMatrix(lProjectionT);
 	if(texture.isApplied)
 	{
+		glUniform3f(lAddColorT, 0.f,0.f,0.f);
+		SetModelView(std::move(view));
+		SetMatrix(lProjectionT);
+		glBindTexture(GL_TEXTURE_2D, texture.id);
 		SetBlendingMode();
 		glDisableVertexAttribArray(2);
 		glVertexAttrib4fv(2, colorRgba);
 		vSprite.Bind();
 		vSprite.Draw(0);
+	}
+	else if(curPat)
+	{
+		glDisable(GL_DEPTH_TEST);
+		glDisableVertexAttribArray(2);
+		parts->Draw(curImageId, partView, [this](glm::mat4 m){			
+				SetModelView(std::move(m));
+				SetMatrix(lProjectionT);
+			},
+			[this](float r, float g, float b){
+				glUniform3f(lAddColorT,r,g,b);
+			},
+			colorRgba
+		);
+		glEnable(GL_DEPTH_TEST);
 	}
 	//Reset state
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -224,24 +256,27 @@ void Render::SwitchImage(int id, bool pat)
 	{
 		curImageId = id;
 		curPat = pat;
-		texture.Unapply();
+		if(texture.isApplied)
+			texture.Unapply();
 
-		ImageData *image = nullptr;
+		scale = iScale;
+	//if(curPat)
+		
 		if(pat)
 		{
-			image = parts->GetTexture(id);
+			scale *= 0.5f;
+			return;
 		}
-		else
-		{
-			image = cg->draw_texture(id, false, false);
-		}
+
+		ImageData *image = nullptr;
+		image = cg->draw_texture(id, false, false);
 
 		if(!image)
 		{
 			return;
 		}
 
-		texture.Load(image);
+		texture.Load(image); //Deletes the resource when done using it.
 		texture.Apply(false, filter);
 		
 		AdjustImageQuad(texture.image->offsetX, texture.image->offsetY, texture.image->width, texture.image->height);
