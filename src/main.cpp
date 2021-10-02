@@ -24,6 +24,7 @@
 #define HA6GUIVERSION " custom"
 #endif
 
+char dirLocation[MAX_PATH];
 char iniLocation[512] {};
 
 ImVec2 clientRect;
@@ -71,6 +72,7 @@ bool LoopEvents()
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow)
 {
+#ifndef NDEBUG
 	std::ofstream cerrFile;
 	cerrFile.open("hanteichan.log");
 	auto cerr_buf = std::cerr.rdbuf(cerrFile.rdbuf());
@@ -78,6 +80,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 	std::ofstream coutFile;
 	coutFile.open("cout.txt");
 	auto cout_buf = std::cout.rdbuf(coutFile.rdbuf());
+#endif
 	
 	bool useIni = true;
 	int argC;
@@ -92,7 +95,11 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 			char * where = (char*)(argV[i]);
 			wcstombs(where, argV[i], wcslen(argV[i])+1);
 			
-			
+			#ifdef NDEBUG
+				std::ofstream coutFile;
+				coutFile.open("cout.txt");
+				auto cout_buf = std::cout.rdbuf(coutFile.rdbuf());
+			#endif
 			//TestHa6(where);
 			TestPat(where);
 			LocalFree(argV);
@@ -120,6 +127,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 	//If it fails... Well, that works too.
 	if(useIni)
 	{
+		GetCurrentDirectoryA(MAX_PATH, dirLocation);
 		int appendAt = GetCurrentDirectoryA(512, iniLocation);
 		strcpy(iniLocation+appendAt, "\\hanteichan.ini");
 	}
@@ -254,14 +262,14 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		}
 		return 0;
 	case WM_KEYDOWN:
-		if(!ImGui::GetIO().WantCaptureKeyboard)
+		if(!mf->drawImgui || !ImGui::GetIO().WantCaptureKeyboard)
 		{
 			if(mf->HandleKeys(wParam))
 				return 0;
 		}
 		break;
 	case WM_RBUTTONDOWN:
-		if(!ImGui::GetIO().WantCaptureMouse)
+		if(!mf->drawImgui || !ImGui::GetIO().WantCaptureMouse)
 		{
 			dragRight = true;
 			GetCursorPos(&mousePos);
@@ -282,7 +290,7 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		}
 		break;
 	case WM_LBUTTONDOWN:
-		if(!ImGui::GetIO().WantCaptureMouse)
+		if(!mf->drawImgui || !ImGui::GetIO().WantCaptureMouse)
 		{
 			dragLeft = true;
 			GetCursorPos(&mousePos);

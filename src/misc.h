@@ -3,6 +3,8 @@
 
 #include <string>
 
+extern bool screenShot;
+
 static inline int to_pow2(int a) {
 	int v = 1;
 	while (v < a) {

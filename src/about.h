@@ -33,6 +33,53 @@ public:
 			ImGui::PopStyleColor(2);
 		}
 	}
+};
+
+
+class HelpWindow 
+{
+public:
+	bool isVisible = false;
+
+	void Draw()
+	{
+		if(isVisible)
+		{
+			ImGui::SetNextWindowSize(ImVec2{375,305});
+			ImGui::Begin("Shortcuts", &isVisible, ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
+
+			constexpr const char *shortcutText[] = {
+				"Up", "Next pattern",
+				"Down", "Previous pattern",
+				"Right", "Next frame",
+				"Left", "Previous frame",
+				"X", "Next box",
+				"Z", "Previous box",
+				"P", "Output current view as image",
+				"L", "Toggle axis",
+				"F", "Hide user interface",
+				"-","-",
+				"Right click & drag", "Draw box",
+				"Left click & drag", "Pan view",
+			};
+
+			if (ImGui::BeginTable("table1", 2))
+			{
+				for (int row = 0; row < sizeof(shortcutText)/sizeof(char*)/2; row++)
+				{
+					ImGui::TableNextRow();
+					for (int column = 0; column < 2; column++)
+					{
+						ImGui::TableSetColumnIndex(column);
+						ImGui::Text("%s", shortcutText[row*2 + column]);
+					}
+				}
+				ImGui::EndTable();
+			}
+
+			ImGui::End();
+		}
+	}
 
 private:
 };

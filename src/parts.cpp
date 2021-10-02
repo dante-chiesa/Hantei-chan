@@ -224,7 +224,7 @@ unsigned int* Parts::PrLoad(unsigned int *data, const unsigned int *data_end, in
 //Contains many parts
 unsigned int* Parts::P_Load(unsigned int *data, const unsigned int *data_end, int id)
 {
-	char* name = nullptr;
+	const char* name = "";
 	bool hasData = false;
 	while (data < data_end) {
 		unsigned int *buf = data;
@@ -432,7 +432,9 @@ void Parts::Draw(int pattern, const glm::mat4 &projection,
 			
 			//setMatrix(glm::scale(projection, glm::vec3(0.75f,0.75f,1.f))*view);
 			setMatrix(projection*view);
-			if(part.additive)
+			if(screenShot)
+				glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA, GL_ONE);
+			else if(part.additive)
 				glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 			else
 				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

@@ -12,6 +12,7 @@
 #include <iostream>
 
 #include "hitbox.h"
+#include "misc.h"
 
 constexpr int maxBoxes = 33;
 
@@ -79,7 +80,6 @@ void main()
 }
 )";
 
-
 Render::Render(CG* cg, Parts* parts):
 cg(cg),
 parts(parts),
@@ -144,7 +144,7 @@ blendingMode(normal)
 
 	glViewport(0, 0, clientRect.x, clientRect.y);
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_DEPTH_TEST);
 }
 
@@ -177,11 +177,15 @@ void Render::Draw()
 	view = glm::scale(view, glm::vec3(scale, scale, 1.f));
 	view = glm::translate(view, glm::vec3(x,y,0.f));
 	SetModelView(std::move(view));
-	glUniform1f(lAlphaS, 0.25f);
 	SetMatrix(lProjectionS);
-	vGeometry.Bind();
-	vGeometry.Draw(geoParts[LINES], 0, GL_LINES);
 
+	if(drawLines)
+	{
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glUniform1f(lAlphaS, 0.25f);
+		vGeometry.Bind();
+		vGeometry.Draw(geoParts[LINES], 0, GL_LINES);
+	}
 	//Sprite
 	constexpr float tau = glm::pi<float>()*2.f;
 	view = glm::mat4(1.f);
@@ -223,16 +227,25 @@ void Render::Draw()
 		glEnable(GL_DEPTH_TEST);
 	}
 	//Reset state
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glBlendEquation(GL_FUNC_ADD);
-
-	//Boxes
 	sSimple.Use();
 	vGeometry.Bind();
-	glUniform1f(lAlphaS, 0.6f);
-	vGeometry.DrawQuads(GL_LINE_LOOP, quadsToDraw);
-	glUniform1f(lAlphaS, 0.3f);
-	vGeometry.DrawQuads(GL_TRIANGLE_FAN, quadsToDraw);
+	if(screenShot)
+	{
+		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA, GL_ONE);
+		glUniform1f(lAlphaS, 1.0f);
+		vGeometry.DrawQuads(GL_LINE_LOOP, quadsToDraw);
+		glUniform1f(lAlphaS, 0.5f);
+		vGeometry.DrawQuads(GL_TRIANGLE_FAN, quadsToDraw);
+	}
+	else
+	{
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glUniform1f(lAlphaS, 0.6f);
+		vGeometry.DrawQuads(GL_LINE_LOOP, quadsToDraw);
+		glUniform1f(lAlphaS, 0.3f);
+		vGeometry.DrawQuads(GL_TRIANGLE_FAN, quadsToDraw);
+	}
 }
 
 void Render::SetModelView(glm::mat4&& view_)

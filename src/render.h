@@ -49,6 +49,7 @@ private:
 	float iScale;
 
 public:
+	bool drawLines = true;
 	bool filter;
 	int x, offsetX;
 	int y, offsetY;

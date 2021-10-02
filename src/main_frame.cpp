@@ -4,6 +4,9 @@
 #include "filedialog.h"
 #include "ini.h"
 
+#include <fstream>
+#include <filesystem>
+
 #include <imgui.h>
 #include <imgui_internal.h>
 #include <imgui_impl_opengl3.h>
@@ -13,6 +16,10 @@
 #include <glad/glad.h>
 #include <glm/vec3.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
+#include "stb_image_write.h"
+
+#include "misc.h"
 
 MainFrame::MainFrame(ContextGl *context_):
 context(context_),
@@ -26,6 +33,7 @@ render(&cg, &parts)
 {
 	currState.spriteId = -1;
 	LoadSettings();
+	stbi_flip_vertically_on_write(true);
 }
 
 MainFrame::~MainFrame()
@@ -43,14 +51,21 @@ void MainFrame::LoadSettings()
 
 void MainFrame::Draw()
 {
-	ImGui_ImplOpenGL3_NewFrame();
-	ImGui_ImplWin32_NewFrame();
-	ImGui::NewFrame();
-	DrawUi();
-	DrawBack();
-	ImGui::Render();
-	
-	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	if(drawImgui)
+	{
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplWin32_NewFrame();
+		ImGui::NewFrame();
+		DrawUi();
+		DrawBack();
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	}
+	else
+	{
+		RenderUpdate();
+		DrawBack();
+	}
 
 	SwapBuffers(context->dc);
 
@@ -63,11 +78,39 @@ void MainFrame::Draw()
 void MainFrame::DrawBack()
 {
 	render.filter = smoothRender;
-	glClearColor(clearColor[0], clearColor[1], clearColor[2], 1.f);
+	if(screenShot)
+		glClearColor(0, 0, 0, 0.f);
+	else
+		glClearColor(clearColor[0], clearColor[1], clearColor[2], 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	render.x = (x+clientRect.x/2)/render.scale;
 	render.y = (y+clientRect.y/2)/render.scale;
 	render.Draw();
+
+	if(screenShot)
+	{
+		size_t size = clientRect.x*clientRect.y*4;
+		unsigned char* imageData = new unsigned char[size];
+		glReadPixels(0, 0, clientRect.x, clientRect.y, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
+		//auto res = stbi_write_png("test.png", clientRect.x, clientRect.y, 4, imageData, 0);
+		int len;
+		unsigned char* outData = stbi_write_png_to_mem(imageData, 0, clientRect.x, clientRect.y, 4, &len);
+		delete[] imageData;
+
+		std::stringstream ss;
+		ss.flags(std::ios_base::right);
+		ss <<"pat-"<<std::setfill('0') << std::setw(3) << currState.pattern << "_fr-"<<currState.frame<<".png";
+
+		std::filesystem::path outName(dirLocation);
+		outName /= ss.str();
+		std::ofstream pngOut(outName, std::ios_base::binary);
+		if(pngOut.is_open())
+		{
+			pngOut.write((char*)outData, len);
+		}
+		free(outData);
+		screenShot = false;
+	}
 }
 
 void MainFrame::DrawUi()
@@ -136,6 +179,7 @@ void MainFrame::DrawUi()
 	rightPane.Draw();
 	boxPane.Draw();
 	aboutWindow.Draw();
+	helpWindow.Draw();
 
 	RenderUpdate();
 }
@@ -147,7 +191,10 @@ void MainFrame::RenderUpdate()
 		seq->frames.size() > 0)
 	{
 		if(currState.animeSeq != currState.pattern)
+		{
+			duration = 0;
 			loopCounter = 0;
+		}
 		if(currState.animating)
 		{
 			currState.animeSeq = currState.pattern;
@@ -272,6 +319,7 @@ void MainFrame::RightClick(int x_, int y_)
 
 bool MainFrame::HandleKeys(uint64_t vkey)
 {
+	//bool ctrlDown = GetAsyncKeyState(VK_CONTROL) & 0x8000; 
 	switch (vkey)
 	{
 	case VK_UP:
@@ -291,6 +339,15 @@ bool MainFrame::HandleKeys(uint64_t vkey)
 		return true;
 	case 'X':
 		boxPane.AdvanceBox(+1);
+		return true;
+	case 'P':
+		screenShot = true;
+		return true;
+	case 'F':
+		drawImgui = !drawImgui;
+		return true;
+	case 'L':
+		render.drawLines = !render.drawLines;
 		return true;
 	}
 	return false;
@@ -526,6 +583,7 @@ void MainFrame::Menu(unsigned int errorPopupId)
 		if (ImGui::BeginMenu("Help"))
 		{
 			if (ImGui::MenuItem("About")) aboutWindow.isVisible = !aboutWindow.isVisible;
+			if (ImGui::MenuItem("Shortcuts")) helpWindow.isVisible = !helpWindow.isVisible;
 			ImGui::EndMenu();
 		}
 		ImGui::EndMenuBar();

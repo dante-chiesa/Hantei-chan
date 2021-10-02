@@ -2,6 +2,8 @@
 #include <windows.h>
 #include <string>
 
+bool screenShot = false;
+
 bool ReadInMem(const char *filename, char *&data, unsigned int &size)
 {
 	auto file = CreateFileA(filename, GENERIC_READ, 0, nullptr, OPEN_EXISTING,

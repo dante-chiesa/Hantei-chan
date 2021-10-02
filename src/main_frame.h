@@ -12,6 +12,7 @@
 #include <glm/mat4x4.hpp>
 #include <string>
 
+
 class MainFrame
 {
 public:
@@ -25,6 +26,9 @@ public:
 
 	void RightClick(int x, int y);
 	void LoadSettings();
+
+	bool drawImgui = true;
+	
 
 private:
 	ContextGl *context;
@@ -44,6 +48,8 @@ private:
 	//Animation
 	int duration = 0;
 	int loopCounter;
+
+	//Option
 
 	std::string currentFilePath;
 
@@ -68,6 +74,7 @@ private:
 	RightPane rightPane;
 	BoxPane boxPane;
 	AboutWindow aboutWindow;
+	HelpWindow helpWindow;
 };
 
 

@@ -6,6 +6,6 @@
 extern ImVec2 clientRect;
 //TODO: Move elsewhere
 extern HWND mainWindowHandle;
-
+extern char dirLocation[MAX_PATH];
 
 #endif /* MAIN_H_GUARD */
