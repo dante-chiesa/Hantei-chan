@@ -6,6 +6,7 @@
 
 #include <fstream>
 #include <filesystem>
+#include <sstream>
 
 #include <imgui.h>
 #include <imgui_internal.h>
