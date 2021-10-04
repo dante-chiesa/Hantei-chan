@@ -23,8 +23,8 @@ public:
 			PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER,    // Flags
 			PFD_TYPE_RGBA,        // The kind of framebuffer. RGBA or palette.
 			32,                   // Colordepth of the framebuffer.
-			0, 0, 0, 0, 0, 0,
-			0,
+			8, 0, 8, 0, 8, 0,
+			8,
 			0,
 			0,
 			0, 0, 0, 0,
